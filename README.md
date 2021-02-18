@@ -7,14 +7,29 @@ Template repository for public terraform modules
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.0.0 |
+| terraform | >= 0.14 |
+| aws | >= 3.0 |
+| kubernetes | >= 2.0 |
+| random | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| kubernetes | n/a |
-| random | n/a |
+| kubernetes | >= 2.0 |
+| random | >= 3.0 |
+
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [kubernetes_deployment](https://registry.terraform.io/providers/hashicorp/kubernetes/2.0/docs/resources/deployment) |
+| [kubernetes_service](https://registry.terraform.io/providers/hashicorp/kubernetes/2.0/docs/resources/service) |
+| [random_string](https://registry.terraform.io/providers/hashicorp/random/3.0/docs/resources/string) |
 
 ## Inputs
 
@@ -48,7 +63,6 @@ Template repository for public terraform modules
 |------|-------------|
 | password | n/a |
 | username | n/a |
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Versioning

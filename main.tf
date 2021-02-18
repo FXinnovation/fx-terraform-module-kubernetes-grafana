@@ -1,12 +1,9 @@
-
 #####
 # Locals
 #####
 
 locals {
-  annotations = {
-
-  }
+  annotations = {}
   labels = {
     "version"    = var.image_version
     "part-of"    = "monitoring"
@@ -16,11 +13,7 @@ locals {
     "app"        = "grafana"
 
   }
-  volume_mount_localstorage = var.enabled_localstorage ? [{ name : "grafana-storage", mount_path : "/var/lib/grafana" }] : []
-  volume_mount_datasources  = var.enabled_datasources ? [{ name : "grafana-datasources", mount_path : "/etc/grafana/provisioning/datasources" }] : []
 }
-
-
 
 #####
 # Randoms
@@ -34,8 +27,6 @@ resource "random_string" "selector" {
 }
 
 resource "kubernetes_deployment" "deployment" {
-
-
   metadata {
     name      = var.deployment_name
     namespace = var.namespace_name
@@ -47,10 +38,11 @@ resource "kubernetes_deployment" "deployment" {
     )
 
     annotations = merge(
-      { "configmap.reloader.stakater.com/reload" = "grafana-datasources",
+      {
+        "configmap.reloader.stakater.com/reload" = "grafana-datasources",
         "prometheus.io/scrape"                   = "true",
-      "prometheus.io/port" = "3000" },
-
+        "prometheus.io/port"                     = "3000"
+      },
       local.annotations,
       var.annotations,
       var.namespace_annotations
@@ -104,21 +96,20 @@ resource "kubernetes_deployment" "deployment" {
           }
 
           dynamic "volume_mount" {
-            for_each = local.volume_mount_localstorage
+            for_each = var.enabled_localstorage ? [""] : []
             content {
-              name       = volume_mount.value.name
-              mount_path = volume_mount.value.mount_path
+              name       = "grafana-storage"
+              mount_path = "/var/lib/grafana"
             }
           }
 
           dynamic "volume_mount" {
-            for_each = local.volume_mount_datasources
+            for_each = var.enabled_datasources ? [""] : []
             content {
-              name       = volume_mount.value.name
-              mount_path = volume_mount.value.mount_path
+              name       = "grafana-datasources"
+              mount_path = "/etc/grafana/provisioning/datasources"
             }
           }
-
         }
 
         dynamic "volume" {
@@ -142,7 +133,6 @@ resource "kubernetes_deployment" "deployment" {
           }
         }
 
-
         automount_service_account_token = true
         # node_selector = {
         #   type = "master"
@@ -150,12 +140,10 @@ resource "kubernetes_deployment" "deployment" {
         # security_context {
         #   fs_group = "472"
         # }
-
       }
     }
   }
 }
-
 
 resource "kubernetes_service" "service" {
   metadata {
@@ -163,7 +151,6 @@ resource "kubernetes_service" "service" {
     namespace = var.namespace_name
 
     annotations = merge(
-
       local.annotations,
       var.annotations,
       var.namespace_annotations
@@ -177,7 +164,7 @@ resource "kubernetes_service" "service" {
     port {
       name        = "http"
       port        = 80
-      target_port = http
+      target_port = "http"
       node_port   = var.service_node_port
     }
 
