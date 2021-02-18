@@ -1,24 +1,68 @@
+
+#####
+# Locals
+#####
+
+locals {
+  annotations = {
+
+  }
+  labels = {
+    "version"    = var.image_version
+    "part-of"    = "monitoring"
+    "managed-by" = "terraform"
+    "name"       = "grafana"
+    "component"  = "monitoring"
+    "app"        = "grafana"
+
+  }
+  volume_mount_localstorage = var.enabled_localstorage ? [{ name : "grafana-storage", mount_path : "/var/lib/grafana" }] : []
+  volume_mount_datasources  = var.enabled_datasources ? [{ name : "grafana-datasources", mount_path : "/etc/grafana/provisioning/datasources" }] : []
+}
+
+
+
+#####
+# Randoms
+#####
+
+resource "random_string" "selector" {
+  special = false
+  upper   = false
+  number  = false
+  length  = 8
+}
+
 resource "kubernetes_deployment" "deployment" {
-  depends_on = [kubernetes_config_map.configmap, kubernetes_persistent_volume_claim.pvc]
 
 
   metadata {
-    name      = "grafana"
-    namespace = var.monitoring_name_space
-    labels = {
-      app = "grafana"
-    }
-    annotations = {
-      "configmap.reloader.stakater.com/reload" = "grafana-datasources"
-    }
+    name      = var.deployment_name
+    namespace = var.namespace_name
+
+    labels = merge(
+      local.labels,
+      var.labels,
+      var.namespace_labels
+    )
+
+    annotations = merge(
+      { "configmap.reloader.stakater.com/reload" = "grafana-datasources",
+        "prometheus.io/scrape"                   = "true",
+      "prometheus.io/port" = "3000" },
+
+      local.annotations,
+      var.annotations,
+      var.namespace_annotations
+    )
 
   }
 
   spec {
-    replicas = var.grafana_replica
+    replicas = var.replica
     selector {
       match_labels = {
-        app = "grafana"
+        selector = "grafana-${random_string.selector.result}"
       }
     }
     strategy {
@@ -31,64 +75,81 @@ resource "kubernetes_deployment" "deployment" {
 
     template {
       metadata {
-        labels = {
-          app = "grafana"
-        }
+        labels = merge(
+          { selector = "grafana-${random_string.selector.result}" },
+          local.labels,
+          var.labels,
+          var.namespace_labels
+        )
       }
 
       spec {
         container {
           name  = "grafana"
-          image = "grafana/grafana:latest"
+          image = format("%s:%s", var.image, var.image_id)
           port {
-            name           = "grafana"
+            name           = "http"
             container_port = 3000
           }
 
           resources {
             limits {
-              cpu    = "1000m"
-              memory = "2Gi"
+              cpu    = var.cpu_limits
+              memory = var.mem_limits
             }
             requests {
-              cpu    = "500m"
-              memory = "1Gi"
+              cpu    = var.cpu_requests
+              memory = var.mem_requests
             }
           }
 
-
-          volume_mount {
-            name       = "grafana-storage"
-            mount_path = "/var/lib/grafana"
+          dynamic "volume_mount" {
+            for_each = local.volume_mount_localstorage
+            content {
+              name       = volume_mount.value.name
+              mount_path = volume_mount.value.mount_path
+            }
           }
 
-          volume_mount {
-            name       = "grafana-datasources"
-            mount_path = "/etc/grafana/provisioning/datasources"
-            read_only  = false
+          dynamic "volume_mount" {
+            for_each = local.volume_mount_datasources
+            content {
+              name       = volume_mount.value.name
+              mount_path = volume_mount.value.mount_path
+            }
+          }
 
+        }
+
+        dynamic "volume" {
+          for_each = var.enabled_localstorage ? [""] : []
+          content {
+            name = "grafana-storage"
+            persistent_volume_claim {
+              claim_name = "grafana-pvc"
+            }
           }
         }
-        volume {
-          name = "grafana-datasources"
-          config_map {
-            default_mode = "0777"
-            name         = "grafana-datasources"
+
+        dynamic "volume" {
+          for_each = var.enabled_datasources ? [""] : []
+          content {
+            name = "grafana-datasources"
+            config_map {
+              default_mode = "0666"
+              name         = "grafana-datasources"
+            }
           }
         }
-        volume {
-          name = "grafana-storage"
-          persistent_volume_claim {
-            claim_name = "grafana-pvc"
-          }
-        }
+
+
         automount_service_account_token = true
         # node_selector = {
         #   type = "master"
         # }
-        security_context {
-          fs_group = "472"
-        }
+        # security_context {
+        #   fs_group = "472"
+        # }
 
       }
     }
@@ -98,24 +159,28 @@ resource "kubernetes_deployment" "deployment" {
 
 resource "kubernetes_service" "service" {
   metadata {
-    name      = "grafana"
-    namespace = var.monitoring_name_space
-    annotations = {
-      "prometheus.io/scrape" = "true"
-      "prometheus.io/port"   = "3000"
-    }
+    name      = var.kubernetes_service
+    namespace = var.namespace_name
 
+    annotations = merge(
+
+      local.annotations,
+      var.annotations,
+      var.namespace_annotations
+    )
   }
+
   spec {
     selector = {
       app = "grafana"
     }
     port {
-      port        = 3000
-      target_port = 3000
-      node_port   = var.grafana_node_port
+      name        = "http"
+      port        = 80
+      target_port = http
+      node_port   = var.service_node_port
     }
 
-    type = var.grafana_service_type
+    type = var.service_type
   }
 }

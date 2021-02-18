@@ -1,150 +1,91 @@
-variable "chart_version" {
-  default     = "5.7.10"
-  description = "Grafana version to install"
-  type        = string
+#####
+# Global
+#####
+
+variable "annotations" {
+  description = "Map of annotations that will be merged with all other annotations on all kubernetes resources."
+  default     = {}
 }
 
-variable "vpc_id" {
-  description = "VPC ID"
-  type        = string
+variable "labels" {
+  description = "Map of labels that will be merged with all other labels on all kubernetes resource."
+  default     = {}
 }
 
-variable "database_instance_type" {
-  default     = "db.t3.micro"
-  description = "RDS Database instance type"
-  type        = string
-}
+#####
+# Namespace
+#####
 
-variable "database_skip_final_snapshot" {
-  default     = true
-  description = "Set to true if you /don't/ want to save user defined graphs when running terraform destroy"
-  type        = bool
-}
-
-variable "database_final_snapshot_identifier" {
-  default     = "grafana-snapshot"
-  description = "Snapshot saved when running terraform destroy. Please set/rename if you have more clusters using the same RDS"
-  type        = string
-}
-
-variable "database_snapshot_identifier" {
-  default     = null
-  description = "Name of snapshot of database used when applying. Will only work if the snapshot actually exists"
-  type        = string
-}
-
-variable "namespace" {
+variable "namespace_name" {
+  description = "Name of the namespace to create and deploy the grafana."
   default     = "grafana"
-  description = "Kubernetes namespace to deploy to. This will fail if the namespace already exists."
-  type        = string
 }
 
-variable "oidc_provider_issuer_url" {
-  description = "Issuer used in the OIDC provider associated with the EKS cluster to support IRSA."
-  type        = string
-}
-
-variable "additional_irsa_role_policy_arns" {
-  description = "Additional policy ARNs to attach the Grafana IAM role assumed by Grafana through IRSA."
-  type        = list(string)
-  default     = []
-}
-
-variable "database_subnets" {
-  description = "AWS database subnets"
-  type        = list(string)
-}
-
-variable "tags" {
-  description = "Tags to apply to taggable resources provisioned by this module."
-  type        = map(string)
+variable "namespace_annotations" {
+  description = "Map of annotations to apply to the namespace."
   default     = {}
 }
 
-variable "source_security_group" {
-  type        = string
-  description = "Source security groups RDS should accept connections from"
-}
-
-variable "database_storage_size" {
-  description = "Disk space in GB to allocation for RDS instance"
-  default     = 5
-  type        = number
-}
-
-variable "oauth_config" {
-  description = "OAuth configuration map for grafana.ini. E.g. `{ auth.github = { ... } }`. See https://grafana.com/docs/grafana/latest/auth/overview/ for a complete list of possible properties for each provider."
+variable "namespace_labels" {
+  description = "Map of labels to apply to the namespace."
   default     = {}
 }
 
-variable "config_secrets" {
-  description = "Addition configuration parameters that should be passed as a secret"
-  type        = map(string)
-  default     = {}
+# variable "grafana_ingress_host" {}
+
+
+
+variable "grafana_service_type" {}
+
+variable "replica" {}
+
+variable "grafana_node_port" {}
+
+variable "grafana_persistent_volume_claim_storage" {}
+
+variable "storage_class_name" {}
+
+variable "deployment_name" {
+  default = "grafana"
+  type    = string
 }
 
-variable "auth_enable_basic" {
-  default     = true
-  description = "Disable basic login"
-  type        = bool
-}
-variable "auth_disable_login_form" {
-  default     = false
-  description = "Disable login form"
-  type        = bool
-}
-variable "oauth_auto_login" {
-  default     = false
-  description = "OAuth auto login"
-  type        = bool
+variable "image" {
+
 }
 
-variable "datasources" {
-  description = "List of data sources to put into Grafana. See https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources for examples."
-  default     = []
+variable "image_id" {
+
 }
 
-variable "ingress_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable or disable creation of Ingress resources"
+variable "cpu_limits" {
+
 }
 
-variable "ingress_hostnames" {
-  type        = list(string)
-  default     = []
-  description = "Ingress hostnames"
+variable "mem_limits" {
+
 }
 
-variable "root_domain" {
-  type        = string
-  default     = ""
-  description = "Root URL for OAuth 2.0 authentication"
+variable "cpu_requests" {
+
 }
 
-variable "ingress_cluster_issuer" {
-  type        = string
-  default     = "letsencrypt"
-  description = "Cert-manager cluster issuer"
+variable "mem_requests" {
+
 }
 
-variable "ingress_class" {
-  type        = string
-  default     = "nginx"
-  description = "Ingress class"
+variable "enable_localstorage" {
+  type = bool
 }
 
-variable "wait" {
-  description = "Whether to wait for the deployment of this helm chart to succeed before completing."
-  default     = true
+variable "enabled_datasources" {
+  type = bool
 }
 
-variable "database_auto_minor_version_upgrade" {
-  description = "Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window"
-  type        = bool
-  default     = false
+variable "kubernetes_service" {
+
 }
 
-variable "chart_values" {
-  default = {}
+variable "service_node_port" {
+
 }
