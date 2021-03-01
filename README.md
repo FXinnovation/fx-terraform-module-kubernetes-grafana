@@ -19,23 +19,16 @@ Template repository for public terraform modules
 | kubernetes | >= 2.0 |
 | random | >= 3.0 |
 
-## Modules
-
-No Modules.
-
-## Resources
-
-| Name |
-|------|
-| [kubernetes_deployment](https://registry.terraform.io/providers/hashicorp/kubernetes/2.0/docs/resources/deployment) |
-| [kubernetes_service](https://registry.terraform.io/providers/hashicorp/kubernetes/2.0/docs/resources/service) |
-| [random_string](https://registry.terraform.io/providers/hashicorp/random/3.0/docs/resources/string) |
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| additionnal\_ingress\_paths | n/a | `bool` | n/a | yes |
 | annotations | Map of annotations that will be merged with all other annotations on all kubernetes resources. | `map` | `{}` | no |
+| config\_map\_annotations | n/a | `any` | n/a | yes |
+| config\_map\_labels | n/a | `any` | n/a | yes |
+| config\_map\_name | n/a | `any` | n/a | yes |
+| configuration | n/a | `any` | n/a | yes |
 | cpu\_limits | n/a | `any` | n/a | yes |
 | cpu\_requests | n/a | `any` | n/a | yes |
 | deployment\_name | n/a | `string` | `"grafana"` | no |
@@ -46,6 +39,11 @@ No Modules.
 | grafana\_service\_type | n/a | `any` | n/a | yes |
 | image | n/a | `any` | n/a | yes |
 | image\_id | n/a | `any` | n/a | yes |
+| ingress\_annotations | n/a | `any` | n/a | yes |
+| ingress\_host | n/a | `any` | n/a | yes |
+| ingress\_name | n/a | `any` | n/a | yes |
+| ingress\_tls\_enabled | n/a | `bool` | n/a | yes |
+| ingress\_tls\_secret\_name | n/a | `any` | n/a | yes |
 | kubernetes\_service | n/a | `any` | n/a | yes |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map` | `{}` | no |
 | mem\_limits | n/a | `any` | n/a | yes |
@@ -53,9 +51,17 @@ No Modules.
 | namespace\_annotations | Map of annotations to apply to the namespace. | `map` | `{}` | no |
 | namespace\_labels | Map of labels to apply to the namespace. | `map` | `{}` | no |
 | namespace\_name | Name of the namespace to create and deploy the grafana. | `string` | `"grafana"` | no |
+| password | n/a | `any` | n/a | yes |
 | replica | n/a | `any` | n/a | yes |
+| secret\_annotations | n/a | `any` | n/a | yes |
+| secret\_labels | n/a | `any` | n/a | yes |
+| secret\_name | n/a | `any` | n/a | yes |
+| service\_account\_annotations | n/a | `any` | n/a | yes |
+| service\_account\_name | n/a | `any` | n/a | yes |
 | service\_node\_port | n/a | `any` | n/a | yes |
+| service\_type | n/a | `any` | n/a | yes |
 | storage\_class\_name | n/a | `any` | n/a | yes |
+| user\_name | n/a | `any` | n/a | yes |
 
 ## Outputs
 
@@ -63,6 +69,7 @@ No Modules.
 |------|-------------|
 | password | n/a |
 | username | n/a |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Versioning

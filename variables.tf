@@ -50,29 +50,17 @@ variable "deployment_name" {
   type    = string
 }
 
-variable "image" {
+variable "image" {}
 
-}
+variable "image_id" {}
 
-variable "image_id" {
+variable "cpu_limits" {}
 
-}
+variable "mem_limits" {}
 
-variable "cpu_limits" {
+variable "cpu_requests" {}
 
-}
-
-variable "mem_limits" {
-
-}
-
-variable "cpu_requests" {
-
-}
-
-variable "mem_requests" {
-
-}
+variable "mem_requests" {}
 
 variable "enable_localstorage" {
   type = bool
@@ -82,10 +70,64 @@ variable "enabled_datasources" {
   type = bool
 }
 
-variable "kubernetes_service" {
+variable "kubernetes_service" {}
+
+variable "service_node_port" {}
+
+variable "ingress_name" {}
+
+variable "ingress_annotations" {}
+
+variable "ingress_host" {}
+
+variable "additionnal_ingress_paths" {
+  type = bool
+}
+variable "ingress_tls_enabled" {
+  type = bool
+}
+
+variable "ingress_tls_secret_name" {
 
 }
 
-variable "service_node_port" {
+variable "service_type" {
+
+}
+variable "service_account_name" {
+
+}
+variable "service_account_annotations" {
+
+}
+variable "config_map_name" {
+
+}
+variable "config_map_annotations" {
+
+}
+variable "config_map_labels" {
+
+}
+variable "configuration" {
+
+}
+variable "secret_name" {
+
+}
+
+variable "secret_annotations" {
+
+}
+
+variable "secret_labels" {
+
+}
+
+variable "user_name" {
+
+}
+
+variable "password" {
 
 }

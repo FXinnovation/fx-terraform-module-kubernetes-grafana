@@ -145,7 +145,79 @@ resource "kubernetes_deployment" "deployment" {
   }
 }
 
-resource "kubernetes_service" "service" {
+#####
+# Ingress
+#####
+
+resource "kubernetes_ingress" "this" {
+  count = var.enabled && var.ingress_enabled ? 1 : 0
+
+  metadata {
+    name      = var.ingress_name
+    namespace = var.namespace
+    annotations = merge(
+      local.annotations,
+      var.annotations,
+      var.ingress_annotations
+    )
+    labels = merge(
+      {
+        instance  = var.ingress_name
+        component = "network"
+      },
+      local.labels,
+      var.labels,
+      var.ingress_labels
+    )
+  }
+
+  spec {
+    backend {
+      service_name = element(concat(kubernetes_service.this.*.metadata.0.name, list("")), 0)
+      service_port = "http"
+    }
+
+    rule {
+      host = var.ingress_host
+      http {
+        path {
+          backend {
+            service_name = element(concat(kubernetes_service.this.*.metadata.0.name, list("")), 0)
+            service_port = "http"
+          }
+          path = "/"
+        }
+
+        dynamic "path" {
+          for_each = var.additionnal_ingress_paths
+
+          content {
+            backend {
+              service_name = lookup(path.value, "service_name", element(concat(kubernetes_service.this.*.metadata.0.name, list("")), 0))
+              service_port = lookup(path.value, "service_port", "http")
+            }
+
+            path = lookup(path.value, "path", null)
+          }
+        }
+      }
+    }
+
+    dynamic "tls" {
+      for_each = var.ingress_tls_enabled ? [1] : []
+
+      content {
+        secret_name = var.ingress_tls_secret_name
+        hosts       = [var.ingress_host]
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "this" {
+
+  count = var.enabled ? 1 : 0
+
   metadata {
     name      = var.kubernetes_service
     namespace = var.namespace_name
@@ -170,4 +242,87 @@ resource "kubernetes_service" "service" {
 
     type = var.service_type
   }
+}
+
+resource "kubernetes_service_account" "this" {
+  count = var.enabled ? 1 : 0
+
+  metadata {
+    name      = var.service_account_name
+    namespace = var.namespace
+
+    annotations = merge(
+      local.annotations,
+      var.annotations,
+      var.service_account_annotations
+    )
+
+    labels = merge(
+      local.labels,
+      var.labels,
+      var.service_account_annotations
+    )
+  }
+}
+
+#####
+# ConfigMap
+#####
+
+resource "kubernetes_config_map" "this" {
+  count = var.enabled ? 1 : 0
+
+  metadata {
+    name      = var.config_map_name
+    namespace = var.namespace
+    annotations = merge(
+      var.annotations,
+      var.config_map_annotations
+    )
+    labels = merge(
+      {
+        instance = var.config_map_name
+      },
+      local.labels,
+      var.labels,
+      var.config_map_labels
+    )
+  }
+
+  data = {
+    "grafana.yml" = var.configuration
+  }
+}
+
+#####
+# Secret
+#####
+
+resource "kubernetes_secret" "this" {
+  count = var.enabled ? 1 : 0
+
+  metadata {
+    name      = var.secret_name
+    namespace = var.namespace
+    annotations = merge(
+      var.annotations,
+      var.secret_annotations
+    )
+    labels = merge(
+      {
+        "instance" = var.secret_name
+      },
+      local.labels,
+      var.labels,
+      var.secret_labels
+    )
+  }
+
+  data = {
+
+    user_name = var.user_name
+    password  = var.password
+  }
+
+  type = "Opaque"
 }
