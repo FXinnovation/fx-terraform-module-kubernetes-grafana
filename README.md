@@ -23,52 +23,56 @@ Template repository for public terraform modules
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| additionnal\_ingress\_paths | n/a | `bool` | n/a | yes |
+| additionnal\_ingress\_paths | A list of map of additionnal ingress path to add. Map must support the following structure:<br>  * service\_name (optional, string): The name of the kubernates service. (e.g. ssl-redirect)<br>  * service\_port (optional, string): The service port number (e.g. use-annotation).<br>  * path (optional, string): The path to the service<br><br>For example, see folder examples/without-pvc. | `list` | `[]` | no |
 | annotations | Map of annotations that will be merged with all other annotations on all kubernetes resources. | `map` | `{}` | no |
-| config\_map\_annotations | n/a | `any` | n/a | yes |
-| config\_map\_labels | n/a | `any` | n/a | yes |
-| config\_map\_name | n/a | `any` | n/a | yes |
-| configuration | n/a | `any` | n/a | yes |
-| cpu\_limits | n/a | `any` | n/a | yes |
-| cpu\_requests | n/a | `any` | n/a | yes |
-| deployment\_name | n/a | `string` | `"grafana"` | no |
-| enable\_localstorage | n/a | `bool` | n/a | yes |
-| enabled\_datasources | n/a | `bool` | n/a | yes |
-| grafana\_node\_port | n/a | `any` | n/a | yes |
-| grafana\_persistent\_volume\_claim\_storage | n/a | `any` | n/a | yes |
-| grafana\_service\_type | n/a | `any` | n/a | yes |
-| image | n/a | `any` | n/a | yes |
-| image\_id | n/a | `any` | n/a | yes |
-| ingress\_annotations | n/a | `any` | n/a | yes |
-| ingress\_host | n/a | `any` | n/a | yes |
-| ingress\_name | n/a | `any` | n/a | yes |
-| ingress\_tls\_enabled | n/a | `bool` | n/a | yes |
-| ingress\_tls\_secret\_name | n/a | `any` | n/a | yes |
-| kubernetes\_service | n/a | `any` | n/a | yes |
+| config\_map\_annotations | Additionnal annotations that will be merged for the config map. | `map` | `{}` | no |
+| config\_map\_labels | Additionnal labels that will be merged for the config map. | `map` | `{}` | no |
+| config\_map\_name | Name of the config map that will be created. | `string` | `"alertmanager-webhook-servicenow"` | no |
+| configuration | Configuration to use for grafana (must be a yaml string). | `string` | n/a | yes |
+| deployment\_annotations | Additionnal annotations that will be merged on the deployment. | `map` | `{}` | no |
+| deployment\_labels | Additionnal labels that will be merged on the deployment. | `map` | `{}` | no |
+| deployment\_name | Name of the deployment that will be create. | `string` | `"grafana"` | no |
+| deployment\_template\_labels | Map of annotations to apply to the namespace. | `map` | `{}` | no |
+| enabled\_localstorage | n/a | `bool` | `true` | no |
+| grafana\_secret | Secrets to use for grafana (must be a yaml string). | `string` | n/a | yes |
+| image | Image to use. | `string` | `"fxinnovation/grafana"` | no |
+| image\_version | Version of the image to use. | `string` | `""` | no |
+| ingress\_annotations | Map of annotations that will be applied on the ingress. | `map` | `{}` | no |
+| ingress\_enabled | Whether or not to enable the ingress. | `bool` | `true` | no |
+| ingress\_host | Host on which the ingress wil be available (ex: nexus.example.com). | `string` | `"example.com"` | no |
+| ingress\_labels | Map of labels that will be applied on the ingress. | `map` | `{}` | no |
+| ingress\_name | Name of the ingress. | `string` | `"jenkins"` | no |
+| ingress\_tls\_enabled | Whether or not TLS should be enabled on the ingress. | `bool` | `true` | no |
+| ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"jenkins"` | no |
+| kubernetes\_service | Name of the service. | `string` | `"grafana"` | no |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map` | `{}` | no |
-| mem\_limits | n/a | `any` | n/a | yes |
-| mem\_requests | n/a | `any` | n/a | yes |
-| namespace\_annotations | Map of annotations to apply to the namespace. | `map` | `{}` | no |
-| namespace\_labels | Map of labels to apply to the namespace. | `map` | `{}` | no |
-| namespace\_name | Name of the namespace to create and deploy the grafana. | `string` | `"grafana"` | no |
-| password | n/a | `any` | n/a | yes |
-| replica | n/a | `any` | n/a | yes |
-| secret\_annotations | n/a | `any` | n/a | yes |
-| secret\_labels | n/a | `any` | n/a | yes |
-| secret\_name | n/a | `any` | n/a | yes |
-| service\_account\_annotations | n/a | `any` | n/a | yes |
-| service\_account\_name | n/a | `any` | n/a | yes |
-| service\_node\_port | n/a | `any` | n/a | yes |
-| service\_type | n/a | `any` | n/a | yes |
-| storage\_class\_name | n/a | `any` | n/a | yes |
-| user\_name | n/a | `any` | n/a | yes |
+| namespace | Namespace in which the module will be deployed. | `string` | `"default"` | no |
+| replicas | Number of replicas to deploy. | `number` | `1` | no |
+| resources\_limits\_cpu | Amount of cpu time that the application limits. | `string` | `"2"` | no |
+| resources\_limits\_memory | Amount of memory that the application limits. | `string` | `"4096Mi"` | no |
+| resources\_requests\_cpu | Amount of cpu time that the application requests. | `string` | `"1"` | no |
+| resources\_requests\_memory | Amount of memory that the application requests. | `string` | `"2048Mi"` | no |
+| secret\_annotations | Additionnal annotations that will be merged for the secret. | `map` | `{}` | no |
+| secret\_labels | Additionnal labels that will be merged for the secret. | `map` | `{}` | no |
+| secret\_name | Name of the secret that will be created. | `string` | `"grafana"` | no |
+| service\_account\_annotations | Map of annotations that is merged on the service account. | `map` | `{}` | no |
+| service\_account\_labels | Map of labels that is merged on the service account. | `map` | `{}` | no |
+| service\_account\_name | name of the service account | `string` | `"grafana"` | no |
+| service\_annotations | Map of annotations that will be applied on the service. | `map` | `{}` | no |
+| service\_labels | Map of labels that will be applied on the service. | `map` | `{}` | no |
+| service\_name | Name of the service. | `string` | `"jenkins"` | no |
+| service\_type | type of service | `map` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| password | n/a |
-| username | n/a |
+| config\_map | n/a |
+| deployment | n/a |
+| ingress | n/a |
+| secret | n/a |
+| service | n/a |
+| service\_account | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
@@ -77,18 +81,3 @@ This repository follows [Semantic Versioning 2.0.0](https://semver.org/)
 
 ## Git Hooks
 This repository uses [pre-commit](https://pre-commit.com/) hooks.
-
-## Usage
-
-module "grafana" {
-  #https://github.com/grafana/grafana
-  source = "https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/terraform-module-kubernetes-grafana"
-  # grafana_ingress_host = var.grafana_ingress_host
-  monitoring_name_space = var.monitoring_name_space
-  grafana_service_type = var.grafana_service_type
-  grafana_replica = var.grafana_replica
-  grafana_node_port = var.grafana_node_port
-  grafana_persistent_volume_claim_storage = var.grafana_persistent_volume_claim_storage
-  storage_class_name= var.storage_class_name
-
-}

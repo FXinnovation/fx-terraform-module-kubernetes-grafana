@@ -29,29 +29,28 @@ resource "random_string" "selector" {
 resource "kubernetes_deployment" "deployment" {
   metadata {
     name      = var.deployment_name
-    namespace = var.namespace_name
+    namespace = var.namespace
 
     labels = merge(
       local.labels,
       var.labels,
-      var.namespace_labels
+      var.deploymnet_labels
     )
 
     annotations = merge(
       {
-        "configmap.reloader.stakater.com/reload" = "grafana-datasources",
-        "prometheus.io/scrape"                   = "true",
-        "prometheus.io/port"                     = "3000"
+        "prometheus.io/scrape" = "true",
+        "prometheus.io/port"   = "3000"
       },
       local.annotations,
       var.annotations,
-      var.namespace_annotations
+      var.deployment_annotations
     )
 
   }
 
   spec {
-    replicas = var.replica
+    replicas = var.replicas
     selector {
       match_labels = {
         selector = "grafana-${random_string.selector.result}"
@@ -71,27 +70,56 @@ resource "kubernetes_deployment" "deployment" {
           { selector = "grafana-${random_string.selector.result}" },
           local.labels,
           var.labels,
-          var.namespace_labels
+          var.deployment_template_labels
+        )
+
+        annotations = merge(
+          { "configuration/hash" = sha256(var.configuration) },
+          local.annotations,
+          var.annotations,
+          var.deployment_annotations
         )
       }
 
       spec {
         container {
           name  = "grafana"
-          image = format("%s:%s", var.image, var.image_id)
+          image = format("%s:%s", var.image, var.image_version)
           port {
             name           = "http"
             container_port = 3000
           }
 
+          env {
+            name = "GRAFANA_USERNAME"
+            value_from {
+              secret_key_ref {
+
+                name = kubernetes_secret.this.*.metadata.0.name
+                key  = "user_name"
+              }
+            }
+          }
+
+          env {
+            name = "GRAFANA_PASSWORD"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.this.*.metadata.0.name
+                key  = "password"
+              }
+            }
+          }
+
+
           resources {
             limits {
-              cpu    = var.cpu_limits
-              memory = var.mem_limits
+              cpu    = var.resources_limits_cpu
+              memory = var.resources_limits_memory
             }
             requests {
-              cpu    = var.cpu_requests
-              memory = var.mem_requests
+              cpu    = var.resources_requests_cpu
+              memory = var.resources_requests_memory
             }
           }
 
@@ -103,43 +131,51 @@ resource "kubernetes_deployment" "deployment" {
             }
           }
 
-          dynamic "volume_mount" {
-            for_each = var.enabled_datasources ? [""] : []
-            content {
-              name       = "grafana-datasources"
-              mount_path = "/etc/grafana/provisioning/datasources"
+        }
+        resource "kubernetes_persistent_volume_claim" "grafan_pvc" {
+          metadata {
+            name = "grafan_pvc"
+          }
+          spec {
+            access_modes = ["ReadWriteMany"]
+            resources {
+              requests = {
+                storage = "5Gi"
+              }
             }
+            volume_name = kubernetes_persistent_volume.grafan_pv.metadata.0.name
           }
         }
 
+        resource "kubernetes_persistent_volume" "grafana_pv" {
+          metadata {
+            name = "grafana_pv"
+          }
+          spec {
+            capacity = {
+              storage = "10Gi"
+            }
+            access_modes = ["ReadWriteMany"]
+            persistent_volume_source {
+              gce_persistent_disk {
+                pd_name = "grafana_pd"
+              }
+            }
+          }
+        }
         dynamic "volume" {
           for_each = var.enabled_localstorage ? [""] : []
           content {
             name = "grafana-storage"
             persistent_volume_claim {
-              claim_name = "grafana-pvc"
+              claim_name = "grafana_pvc"
             }
           }
         }
 
-        dynamic "volume" {
-          for_each = var.enabled_datasources ? [""] : []
-          content {
-            name = "grafana-datasources"
-            config_map {
-              default_mode = "0666"
-              name         = "grafana-datasources"
-            }
-          }
-        }
 
         automount_service_account_token = true
-        # node_selector = {
-        #   type = "master"
-        # }
-        # security_context {
-        #   fs_group = "472"
-        # }
+
       }
     }
   }
@@ -150,7 +186,7 @@ resource "kubernetes_deployment" "deployment" {
 #####
 
 resource "kubernetes_ingress" "this" {
-  count = var.enabled && var.ingress_enabled ? 1 : 0
+  count = var.ingress_enabled ? 1 : 0
 
   metadata {
     name      = var.ingress_name
@@ -173,7 +209,7 @@ resource "kubernetes_ingress" "this" {
 
   spec {
     backend {
-      service_name = element(concat(kubernetes_service.this.*.metadata.0.name, list("")), 0)
+      service_name = kubernetes_service.this.*.metadata.0.name
       service_port = "http"
     }
 
@@ -182,7 +218,7 @@ resource "kubernetes_ingress" "this" {
       http {
         path {
           backend {
-            service_name = element(concat(kubernetes_service.this.*.metadata.0.name, list("")), 0)
+            service_name = kubernetes_service.this.*.metadata.0.name
             service_port = "http"
           }
           path = "/"
@@ -193,7 +229,7 @@ resource "kubernetes_ingress" "this" {
 
           content {
             backend {
-              service_name = lookup(path.value, "service_name", element(concat(kubernetes_service.this.*.metadata.0.name, list("")), 0))
+              service_name = lookup(path.value, "service_name", kubernetes_service.this.*.metadata.0.name)
               service_port = lookup(path.value, "service_port", "http")
             }
 
@@ -214,38 +250,46 @@ resource "kubernetes_ingress" "this" {
   }
 }
 
-resource "kubernetes_service" "this" {
+#####
+# Service
+#####
 
-  count = var.enabled ? 1 : 0
+resource "kubernetes_service" "this" {
 
   metadata {
     name      = var.kubernetes_service
-    namespace = var.namespace_name
+    namespace = var.namespace
 
     annotations = merge(
       local.annotations,
       var.annotations,
-      var.namespace_annotations
+      var.service_annotations
+    )
+    labels = merge(
+      local.labels,
+      var.labels,
+      var.service_labels
     )
   }
 
   spec {
-    selector = {
-      app = "grafana"
-    }
+    selector = { selector = "grafana-${random_string.selector.result}" }
     port {
       name        = "http"
       port        = 80
       target_port = "http"
-      node_port   = var.service_node_port
     }
 
     type = var.service_type
   }
 }
 
+#####
+# Service Account
+#####
+
 resource "kubernetes_service_account" "this" {
-  count = var.enabled ? 1 : 0
+
 
   metadata {
     name      = var.service_account_name
@@ -260,7 +304,7 @@ resource "kubernetes_service_account" "this" {
     labels = merge(
       local.labels,
       var.labels,
-      var.service_account_annotations
+      var.service_account_labels
     )
   }
 }
@@ -270,7 +314,6 @@ resource "kubernetes_service_account" "this" {
 #####
 
 resource "kubernetes_config_map" "this" {
-  count = var.enabled ? 1 : 0
 
   metadata {
     name      = var.config_map_name
@@ -299,7 +342,6 @@ resource "kubernetes_config_map" "this" {
 #####
 
 resource "kubernetes_secret" "this" {
-  count = var.enabled ? 1 : 0
 
   metadata {
     name      = var.secret_name
@@ -319,9 +361,7 @@ resource "kubernetes_secret" "this" {
   }
 
   data = {
-
-    user_name = var.user_name
-    password  = var.password
+    "grafana_secret.yml" = var.grafana_secret
   }
 
   type = "Opaque"
