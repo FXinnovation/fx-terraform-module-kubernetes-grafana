@@ -89,25 +89,11 @@ resource "kubernetes_deployment" "deployment" {
             name           = "http"
             container_port = 3000
           }
+          service_account_name = kubernetes_service_account.this.*.metadata.0.name
 
-          env {
-            name = "GRAFANA_USERNAME"
-            value_from {
-              secret_key_ref {
-
-                name = kubernetes_secret.this.*.metadata.0.name
-                key  = "user_name"
-              }
-            }
-          }
-
-          env {
-            name = "GRAFANA_PASSWORD"
-            value_from {
-              secret_key_ref {
-                name = kubernetes_secret.this.*.metadata.0.name
-                key  = "password"
-              }
+          env_from {
+            secret_ref {
+              name = kubernetes_secret.this.*.metadata.0.name
             }
           }
 
@@ -132,37 +118,9 @@ resource "kubernetes_deployment" "deployment" {
           }
 
         }
-        resource "kubernetes_persistent_volume_claim" "grafan_pvc" {
-          metadata {
-            name = "grafan_pvc"
-          }
-          spec {
-            access_modes = ["ReadWriteMany"]
-            resources {
-              requests = {
-                storage = "5Gi"
-              }
-            }
-            volume_name = kubernetes_persistent_volume.grafan_pv.metadata.0.name
-          }
-        }
 
-        resource "kubernetes_persistent_volume" "grafana_pv" {
-          metadata {
-            name = "grafana_pv"
-          }
-          spec {
-            capacity = {
-              storage = "10Gi"
-            }
-            access_modes = ["ReadWriteMany"]
-            persistent_volume_source {
-              gce_persistent_disk {
-                pd_name = "grafana_pd"
-              }
-            }
-          }
-        }
+
+
         dynamic "volume" {
           for_each = var.enabled_localstorage ? [""] : []
           content {
@@ -178,6 +136,33 @@ resource "kubernetes_deployment" "deployment" {
 
       }
     }
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "grafan_pvc" {
+  metadata {
+    name = var.pvc_name
+    annotations = merge(
+      local.annotations,
+      var.annotations,
+      var.ingress_annotations
+    )
+    labels = merge(
+      local.labels,
+      var.labels,
+      var.ingress_labels
+    )
+  }
+
+  spec {
+    access_modes = ["ReadWriteMany"]
+    resources {
+      requests = {
+        storage = var.pvc_storage
+      }
+    }
+    storage_class_name = var.pvc_storage_class_name
+
   }
 }
 
