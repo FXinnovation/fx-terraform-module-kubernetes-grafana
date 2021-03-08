@@ -83,7 +83,7 @@ variable "resources_limits_memory" {
 
 variable "service_name" {
   description = "Name of the service."
-  default     = "jenkins"
+  default     = "grafana"
 }
 
 variable "service_annotations" {
@@ -112,7 +112,7 @@ variable "ingress_enabled" {
 
 variable "ingress_name" {
   description = "Name of the ingress."
-  default     = "jenkins"
+  default     = "grafana"
 }
 
 variable "ingress_annotations" {
@@ -137,7 +137,7 @@ variable "ingress_tls_enabled" {
 
 variable "ingress_tls_secret_name" {
   description = "Name of the secret to use to put TLS on the ingress."
-  default     = "jenkins"
+  default     = "grafana"
 }
 
 variable "additionnal_ingress_paths" {
@@ -180,7 +180,7 @@ variable "service_account_labels" {
 
 variable "config_map_name" {
   description = "Name of the config map that will be created."
-  default     = "alertmanager-webhook-servicenow"
+  default     = "grafana"
 }
 
 variable "config_map_annotations" {
@@ -216,4 +216,22 @@ variable "secret_labels" {
 variable "grafana_secret" {
   description = "Secrets to use for grafana (must be a yaml string)."
   type        = string
+}
+
+variable "pvc_name" {
+  description = "Name of the PVC for gradfana"
+  type        = string
+  default     = "grafana"
+}
+
+variable "pvc_storage" {
+  description = "Name of the PVC for gradfana"
+  type        = string
+  default     = "10Gb"
+}
+
+variable "pvc_storage_class_name" {
+  description = "Name of the PVC for gradfana"
+  type        = string
+  default     = "grafana"
 }

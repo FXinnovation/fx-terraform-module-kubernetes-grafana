@@ -27,7 +27,7 @@ Template repository for public terraform modules
 | annotations | Map of annotations that will be merged with all other annotations on all kubernetes resources. | `map` | `{}` | no |
 | config\_map\_annotations | Additionnal annotations that will be merged for the config map. | `map` | `{}` | no |
 | config\_map\_labels | Additionnal labels that will be merged for the config map. | `map` | `{}` | no |
-| config\_map\_name | Name of the config map that will be created. | `string` | `"alertmanager-webhook-servicenow"` | no |
+| config\_map\_name | Name of the config map that will be created. | `string` | `"grafana"` | no |
 | configuration | Configuration to use for grafana (must be a yaml string). | `string` | n/a | yes |
 | deployment\_annotations | Additionnal annotations that will be merged on the deployment. | `map` | `{}` | no |
 | deployment\_labels | Additionnal labels that will be merged on the deployment. | `map` | `{}` | no |
@@ -41,12 +41,15 @@ Template repository for public terraform modules
 | ingress\_enabled | Whether or not to enable the ingress. | `bool` | `true` | no |
 | ingress\_host | Host on which the ingress wil be available (ex: nexus.example.com). | `string` | `"example.com"` | no |
 | ingress\_labels | Map of labels that will be applied on the ingress. | `map` | `{}` | no |
-| ingress\_name | Name of the ingress. | `string` | `"jenkins"` | no |
+| ingress\_name | Name of the ingress. | `string` | `"grafana"` | no |
 | ingress\_tls\_enabled | Whether or not TLS should be enabled on the ingress. | `bool` | `true` | no |
-| ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"jenkins"` | no |
+| ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"grafana"` | no |
 | kubernetes\_service | Name of the service. | `string` | `"grafana"` | no |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map` | `{}` | no |
 | namespace | Namespace in which the module will be deployed. | `string` | `"default"` | no |
+| pvc\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
+| pvc\_storage | Name of the PVC for gradfana | `string` | `"10Gb"` | no |
+| pvc\_storage\_class\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
 | replicas | Number of replicas to deploy. | `number` | `1` | no |
 | resources\_limits\_cpu | Amount of cpu time that the application limits. | `string` | `"2"` | no |
 | resources\_limits\_memory | Amount of memory that the application limits. | `string` | `"4096Mi"` | no |
@@ -60,7 +63,7 @@ Template repository for public terraform modules
 | service\_account\_name | name of the service account | `string` | `"grafana"` | no |
 | service\_annotations | Map of annotations that will be applied on the service. | `map` | `{}` | no |
 | service\_labels | Map of labels that will be applied on the service. | `map` | `{}` | no |
-| service\_name | Name of the service. | `string` | `"jenkins"` | no |
+| service\_name | Name of the service. | `string` | `"grafana"` | no |
 | service\_type | type of service | `map` | `{}` | no |
 
 ## Outputs
