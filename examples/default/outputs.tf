@@ -1,10 +1,4 @@
 #####
-# deployment
-#####
-output "deployment" {
-  value = module.this.deployment
-}
-#####
 # Service
 #####
 output "service" {

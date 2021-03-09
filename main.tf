@@ -317,9 +317,7 @@ resource "kubernetes_config_map" "this" {
     )
   }
 
-  data = {
-    "grafana.yml" = var.configuration
-  }
+  data = var.configuration
 }
 
 #####
@@ -345,9 +343,7 @@ resource "kubernetes_secret" "this" {
     )
   }
 
-  data = {
-    "grafana_secret.yml" = var.grafana_secret
-  }
+  data = var.grafana_secret
 
   type = "Opaque"
 }
