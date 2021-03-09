@@ -40,7 +40,7 @@ No Modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| additionnal\_ingress\_paths | A list of map of additionnal ingress path to add. Map must support the following structure:<br>  * service\_name (optional, string): The name of the kubernates service. (e.g. ssl-redirect)<br>  * service\_port (optional, string): The service port number (e.g. use-annotation).<br>  * path (optional, string): The path to the service<br><br>For example, see folder examples/without-pvc. | `list` | `[]` | no |
+| additionnal\_ingress\_paths | A list of map of additionnal ingress path to add. Map must support the following structure:<br>  * service\_name (optional, string): The name of the kubernates service. (e.g. ssl-redirect)<br>  * service\_port (optional, string): The service port number (e.g. use-annotation).<br>  * path (optional, string): The path to the service<br><br>For example, see folder examples/without-pvc. | `list(any)` | `[]` | no |
 | annotations | Map of annotations that will be merged with all other annotations on all kubernetes resources. | `map` | `{}` | no |
 | config\_map\_annotations | Additionnal annotations that will be merged for the config map. | `map` | `{}` | no |
 | config\_map\_labels | Additionnal labels that will be merged for the config map. | `map` | `{}` | no |
