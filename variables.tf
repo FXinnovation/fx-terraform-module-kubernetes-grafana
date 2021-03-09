@@ -160,7 +160,8 @@ variable "kubernetes_service" {
 
 variable "service_type" {
   description = "type of service"
-  default     = {}
+  type        = string
+  default     = "clusterIP"
 }
 
 variable "service_account_name" {
