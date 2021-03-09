@@ -161,7 +161,7 @@ variable "kubernetes_service" {
 variable "service_type" {
   description = "type of service"
   type        = string
-  default     = "ExternalName"
+  default     = "NodePort"
 }
 
 variable "service_account_name" {
@@ -241,5 +241,5 @@ variable "pvc_storage" {
 variable "pvc_storage_class_name" {
   description = "Name of the PVC for gradfana"
   type        = string
-  default     = "Local"
+  default     = "local"
 }
