@@ -26,7 +26,7 @@ resource "random_string" "selector" {
   length  = 8
 }
 
-resource "kubernetes_deployment" "deployment" {
+resource "kubernetes_deployment" "this" {
   metadata {
     name      = var.deployment_name
     namespace = var.namespace

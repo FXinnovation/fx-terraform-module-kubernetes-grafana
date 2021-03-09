@@ -50,6 +50,7 @@ No Modules.
 | deployment\_labels | Additionnal labels that will be merged on the deployment. | `map` | `{}` | no |
 | deployment\_name | Name of the deployment that will be create. | `string` | `"grafana"` | no |
 | deployment\_template\_labels | Map of annotations to apply to the namespace. | `map` | `{}` | no |
+| deploymnet\_labels | deploymnet labels  that will be merged for the deployment. | `map` | `{}` | no |
 | enabled\_localstorage | n/a | `bool` | `true` | no |
 | grafana\_secret | Secrets to use for grafana (must be a yaml string). | `map(string)` | `{}` | no |
 | image | Image to use. | `string` | `"grafana/grafana"` | no |

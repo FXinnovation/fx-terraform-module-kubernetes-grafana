@@ -214,6 +214,11 @@ variable "secret_labels" {
   default     = {}
 }
 
+variable "deploymnet_labels" {
+  description = "deploymnet labels  that will be merged for the deployment."
+  default     = {}
+}
+
 variable "grafana_secret" {
   description = "Secrets to use for grafana (must be a yaml string)."
   type        = map(string)
