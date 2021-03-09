@@ -14,7 +14,7 @@ variable "labels" {
 
 variable "namespace" {
   description = "Namespace in which the module will be deployed."
-  default     = "default"
+  default     = "grafana"
 }
 
 variable "deployment_template_labels" {
@@ -49,12 +49,12 @@ variable "deployment_annotations" {
 
 variable "image" {
   description = "Image to use."
-  default     = "fxinnovation/grafana"
+  default     = "grafana/grafana"
 }
 
 variable "image_version" {
   description = "Version of the image to use."
-  default     = ""
+  default     = "5.4.3"
 }
 
 variable "resources_requests_cpu" {
@@ -195,7 +195,8 @@ variable "config_map_labels" {
 
 variable "configuration" {
   description = "Configuration to use for grafana (must be a yaml string)."
-  type        = string
+  type        = map(string)
+  default     = {}
 }
 
 variable "secret_name" {
@@ -215,7 +216,8 @@ variable "secret_labels" {
 
 variable "grafana_secret" {
   description = "Secrets to use for grafana (must be a yaml string)."
-  type        = string
+  type        = map(string)
+  default     = {}
 }
 
 variable "pvc_name" {

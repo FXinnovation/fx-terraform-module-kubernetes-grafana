@@ -89,11 +89,11 @@ resource "kubernetes_deployment" "deployment" {
             name           = "http"
             container_port = 3000
           }
-          service_account_name = kubernetes_service_account.this.*.metadata.0.name
+          service_account_name = kubernetes_service_account.this.metadata.0.name
 
           env_from {
             secret_ref {
-              name = kubernetes_secret.this.*.metadata.0.name
+              name = kubernetes_secret.this.metadata.0.name
             }
           }
 
@@ -194,7 +194,7 @@ resource "kubernetes_ingress" "this" {
 
   spec {
     backend {
-      service_name = kubernetes_service.this.*.metadata.0.name
+      service_name = kubernetes_service.this.metadata.0.name
       service_port = "http"
     }
 
@@ -203,7 +203,7 @@ resource "kubernetes_ingress" "this" {
       http {
         path {
           backend {
-            service_name = kubernetes_service.this.*.metadata.0.name
+            service_name = kubernetes_service.this.metadata.0.name
             service_port = "http"
           }
           path = "/"
@@ -214,7 +214,7 @@ resource "kubernetes_ingress" "this" {
 
           content {
             backend {
-              service_name = lookup(path.value, "service_name", kubernetes_service.this.*.metadata.0.name)
+              service_name = lookup(path.value, "service_name", kubernetes_service.this.metadata.0.name)
               service_port = lookup(path.value, "service_port", "http")
             }
 

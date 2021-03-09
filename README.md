@@ -19,6 +19,23 @@ Template repository for public terraform modules
 | kubernetes | >= 2.0 |
 | random | >= 3.0 |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [kubernetes_config_map](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) |
+| [kubernetes_deployment](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) |
+| [kubernetes_ingress](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress) |
+| [kubernetes_persistent_volume_claim](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/persistent_volume_claim) |
+| [kubernetes_secret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) |
+| [kubernetes_service](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) |
+| [kubernetes_service_account](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account) |
+| [random_string](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -28,15 +45,15 @@ Template repository for public terraform modules
 | config\_map\_annotations | Additionnal annotations that will be merged for the config map. | `map` | `{}` | no |
 | config\_map\_labels | Additionnal labels that will be merged for the config map. | `map` | `{}` | no |
 | config\_map\_name | Name of the config map that will be created. | `string` | `"grafana"` | no |
-| configuration | Configuration to use for grafana (must be a yaml string). | `string` | n/a | yes |
+| configuration | Configuration to use for grafana (must be a yaml string). | `map(string)` | `{}` | no |
 | deployment\_annotations | Additionnal annotations that will be merged on the deployment. | `map` | `{}` | no |
 | deployment\_labels | Additionnal labels that will be merged on the deployment. | `map` | `{}` | no |
 | deployment\_name | Name of the deployment that will be create. | `string` | `"grafana"` | no |
 | deployment\_template\_labels | Map of annotations to apply to the namespace. | `map` | `{}` | no |
 | enabled\_localstorage | n/a | `bool` | `true` | no |
-| grafana\_secret | Secrets to use for grafana (must be a yaml string). | `string` | n/a | yes |
-| image | Image to use. | `string` | `"fxinnovation/grafana"` | no |
-| image\_version | Version of the image to use. | `string` | `""` | no |
+| grafana\_secret | Secrets to use for grafana (must be a yaml string). | `map(string)` | `{}` | no |
+| image | Image to use. | `string` | `"grafana/grafana"` | no |
+| image\_version | Version of the image to use. | `string` | `"5.4.3"` | no |
 | ingress\_annotations | Map of annotations that will be applied on the ingress. | `map` | `{}` | no |
 | ingress\_enabled | Whether or not to enable the ingress. | `bool` | `true` | no |
 | ingress\_host | Host on which the ingress wil be available (ex: nexus.example.com). | `string` | `"example.com"` | no |
@@ -46,7 +63,7 @@ Template repository for public terraform modules
 | ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"grafana"` | no |
 | kubernetes\_service | Name of the service. | `string` | `"grafana"` | no |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map` | `{}` | no |
-| namespace | Namespace in which the module will be deployed. | `string` | `"default"` | no |
+| namespace | Namespace in which the module will be deployed. | `string` | `"grafana"` | no |
 | pvc\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
 | pvc\_storage | Name of the PVC for gradfana | `string` | `"10Gb"` | no |
 | pvc\_storage\_class\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
@@ -76,7 +93,6 @@ Template repository for public terraform modules
 | secret | n/a |
 | service | n/a |
 | service\_account | n/a |
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Versioning
