@@ -82,7 +82,7 @@ No Modules.
 | service\_annotations | Map of annotations that will be applied on the service. | `map` | `{}` | no |
 | service\_labels | Map of labels that will be applied on the service. | `map` | `{}` | no |
 | service\_name | Name of the service. | `string` | `"grafana"` | no |
-| service\_type | type of service | `string` | `"clusterIP"` | no |
+| service\_type | type of service | `string` | `"clustExternalName"` | no |
 
 ## Outputs
 

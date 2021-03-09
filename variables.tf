@@ -161,7 +161,7 @@ variable "kubernetes_service" {
 variable "service_type" {
   description = "type of service"
   type        = string
-  default     = "clusterIP"
+  default     = "clustExternalName"
 }
 
 variable "service_account_name" {

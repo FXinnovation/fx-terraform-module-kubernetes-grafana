@@ -127,7 +127,7 @@ resource "kubernetes_deployment" "this" {
           content {
             name = "grafana-storage"
             persistent_volume_claim {
-              claim_name = "grafana_pvc"
+              claim_name = kubernetes_persistent_volume_claim.this.metadata.0.name
             }
           }
         }
@@ -140,7 +140,7 @@ resource "kubernetes_deployment" "this" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "grafan_pvc" {
+resource "kubernetes_persistent_volume_claim" "this" {
   metadata {
     name = var.pvc_name
     annotations = merge(
