@@ -74,7 +74,7 @@ resource "kubernetes_deployment" "this" {
         )
 
         annotations = merge(
-          { "configuration/hash" = sha256(var.configuration) },
+          { "configuration/hash" = sha256(join(", ", values(var.configuration))) },
           local.annotations,
           var.annotations,
           var.deployment_annotations
@@ -82,6 +82,7 @@ resource "kubernetes_deployment" "this" {
       }
 
       spec {
+        service_account_name = kubernetes_service_account.this.metadata.0.name
         container {
           name  = "grafana"
           image = format("%s:%s", var.image, var.image_version)
@@ -89,7 +90,7 @@ resource "kubernetes_deployment" "this" {
             name           = "http"
             container_port = 3000
           }
-          service_account_name = kubernetes_service_account.this.metadata.0.name
+
 
           env_from {
             secret_ref {
