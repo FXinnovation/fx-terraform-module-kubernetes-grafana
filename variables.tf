@@ -161,7 +161,7 @@ variable "kubernetes_service" {
 variable "service_type" {
   description = "type of service"
   type        = string
-  default     = "clustExternalName"
+  default     = "ExternalName"
 }
 
 variable "service_account_name" {
@@ -235,7 +235,7 @@ variable "pvc_name" {
 variable "pvc_storage" {
   description = "Name of the PVC for gradfana"
   type        = string
-  default     = "10Gb"
+  default     = "10Gi"
 }
 
 variable "pvc_storage_class_name" {

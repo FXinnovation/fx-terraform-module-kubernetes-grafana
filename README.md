@@ -66,7 +66,7 @@ No Modules.
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map` | `{}` | no |
 | namespace | Namespace in which the module will be deployed. | `string` | `"grafana"` | no |
 | pvc\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
-| pvc\_storage | Name of the PVC for gradfana | `string` | `"10Gb"` | no |
+| pvc\_storage | Name of the PVC for gradfana | `string` | `"10Gi"` | no |
 | pvc\_storage\_class\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
 | replicas | Number of replicas to deploy. | `number` | `1` | no |
 | resources\_limits\_cpu | Amount of cpu time that the application limits. | `string` | `"2"` | no |
@@ -82,7 +82,7 @@ No Modules.
 | service\_annotations | Map of annotations that will be applied on the service. | `map` | `{}` | no |
 | service\_labels | Map of labels that will be applied on the service. | `map` | `{}` | no |
 | service\_name | Name of the service. | `string` | `"grafana"` | no |
-| service\_type | type of service | `string` | `"clustExternalName"` | no |
+| service\_type | type of service | `string` | `"ExternalName"` | no |
 
 ## Outputs
 
