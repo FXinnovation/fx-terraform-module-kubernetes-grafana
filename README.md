@@ -67,7 +67,7 @@ No Modules.
 | namespace | Namespace in which the module will be deployed. | `string` | `"grafana"` | no |
 | pvc\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
 | pvc\_storage | Name of the PVC for gradfana | `string` | `"10Gi"` | no |
-| pvc\_storage\_class\_name | Name of the PVC for gradfana | `string` | `"local"` | no |
+| pvc\_storage\_class\_name | Name of the PVC for gradfana | `string` | `"StorageOS"` | no |
 | replicas | Number of replicas to deploy. | `number` | `1` | no |
 | resources\_limits\_cpu | Amount of cpu time that the application limits. | `string` | `"2"` | no |
 | resources\_limits\_memory | Amount of memory that the application limits. | `string` | `"4096Mi"` | no |
