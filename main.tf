@@ -38,10 +38,7 @@ resource "kubernetes_deployment" "this" {
     )
 
     annotations = merge(
-      {
-        "prometheus.io/scrape" = "true",
-        "prometheus.io/port"   = "3000"
-      },
+      {},
       local.annotations,
       var.annotations,
       var.deployment_annotations
@@ -143,6 +140,8 @@ resource "kubernetes_deployment" "this" {
 resource "kubernetes_persistent_volume_claim" "this" {
   metadata {
     name = var.pvc_name
+
+    namespace = var.namespace
     annotations = merge(
       local.annotations,
       var.annotations,
