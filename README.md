@@ -65,9 +65,12 @@ No Modules.
 | kubernetes\_service | Name of the service. | `string` | `"grafana"` | no |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map` | `{}` | no |
 | namespace | Namespace in which the module will be deployed. | `string` | `"grafana"` | no |
+| pvc\_access\_modes | A set of the desired access modes the volume should have. | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
 | pvc\_name | Name of the PVC for gradfana | `string` | `"grafana"` | no |
-| pvc\_storage | Name of the PVC for gradfana | `string` | `"10Gi"` | no |
-| pvc\_storage\_class\_name | Name of the PVC for gradfana | `any` | `null` | no |
+| pvc\_storage | storage required for pvc | `string` | `"10Gi"` | no |
+| pvc\_storage\_class\_name | Name of the storage class that will be applied to persistent volume claim. | `string` | `null` | no |
+| pvc\_volume\_name | Name of the volume bound to the persistent volume claim. | `string` | `""` | no |
+| pvc\_wait\_until\_bound | Whether to wait for the claim to reach Bound state (to find volume in which to claim the space) | `bool` | `false` | no |
 | replicas | Number of replicas to deploy. | `number` | `1` | no |
 | resources\_limits\_cpu | Amount of cpu time that the application limits. | `string` | `"2"` | no |
 | resources\_limits\_memory | Amount of memory that the application limits. | `string` | `"4096Mi"` | no |

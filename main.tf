@@ -149,6 +149,10 @@ resource "kubernetes_persistent_volume_claim" "this" {
       var.ingress_annotations
     )
     labels = merge(
+      {
+        instance  = var.pvc_name
+        component = "storage"
+      },
       local.labels,
       var.labels,
       var.ingress_labels
@@ -156,15 +160,17 @@ resource "kubernetes_persistent_volume_claim" "this" {
   }
 
   spec {
-    access_modes = ["ReadWriteMany"]
+    access_modes = var.pvc_access_modes
     resources {
       requests = {
         storage = var.pvc_storage
       }
     }
     storage_class_name = var.pvc_storage_class_name
+    volume_name        = var.pvc_volume_name
 
   }
+  wait_until_bound = var.pvc_wait_until_bound
 }
 
 #####

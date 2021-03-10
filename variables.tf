@@ -233,12 +233,29 @@ variable "pvc_name" {
 }
 
 variable "pvc_storage" {
-  description = "Name of the PVC for gradfana"
+  description = "storage required for pvc "
   type        = string
   default     = "10Gi"
 }
 
 variable "pvc_storage_class_name" {
-  description = "Name of the PVC for gradfana"
+  description = "Name of the storage class that will be applied to persistent volume claim."
+  type        = string
   default     = null
+}
+
+variable "pvc_volume_name" {
+  description = "Name of the volume bound to the persistent volume claim."
+  type        = string
+  default     = ""
+}
+
+variable "pvc_wait_until_bound" {
+  description = "Whether to wait for the claim to reach Bound state (to find volume in which to claim the space)"
+  default     = false
+}
+
+variable "pvc_access_modes" {
+  description = "A set of the desired access modes the volume should have."
+  default     = ["ReadWriteOnce"]
 }
