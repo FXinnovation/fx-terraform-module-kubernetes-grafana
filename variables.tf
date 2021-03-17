@@ -237,7 +237,7 @@ variable "grafana_secret" {
   # }
   # DOCUMENTATION
   type    = map(string)
-  default = { "grafana-root-password" = "test" }
+  default = { "GF_SECURITY_ADMIN_PASSWORD" = "test" }
 
 }
 

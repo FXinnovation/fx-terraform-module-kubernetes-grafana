@@ -52,7 +52,7 @@ No Modules.
 | deployment\_template\_labels | Map of annotations to apply to the namespace. | `map` | `{}` | no |
 | deploymnet\_labels | deploymnet labels  that will be merged for the deployment. | `map` | `{}` | no |
 | enabled\_localstorage | n/a | `bool` | `true` | no |
-| grafana\_secret | n/a | `map(string)` | <pre>{<br>  "grafana-root-password": "test"<br>}</pre> | no |
+| grafana\_secret | n/a | `map(string)` | <pre>{<br>  "GF_SECURITY_ADMIN_PASSWORD": "test"<br>}</pre> | no |
 | image | Image to use. | `string` | `"grafana/grafana"` | no |
 | image\_version | Version of the image to use. | `string` | `"5.4.3"` | no |
 | ingress\_annotations | Map of annotations that will be applied on the ingress. | `map` | `{}` | no |
