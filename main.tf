@@ -32,6 +32,10 @@ resource "kubernetes_deployment" "this" {
     namespace = var.namespace
 
     labels = merge(
+      {
+        instance  = var.deployment_name
+        component = application
+      },
       local.labels,
       var.labels,
       var.deploymnet_labels
@@ -64,7 +68,10 @@ resource "kubernetes_deployment" "this" {
     template {
       metadata {
         labels = merge(
-          { selector = "grafana-${random_string.selector.result}" },
+          { selector  = "grafana-${random_string.selector.result}",
+            instance  = var.deployment_name,
+            component = "application"
+          },
           local.labels,
           var.labels,
           var.deployment_template_labels
@@ -74,7 +81,7 @@ resource "kubernetes_deployment" "this" {
           { "configuration/hash" = sha256(join(", ", values(var.configuration))) },
           local.annotations,
           var.annotations,
-          var.deployment_annotations
+          var.deployment_template_annotations
         )
       }
 
@@ -88,13 +95,17 @@ resource "kubernetes_deployment" "this" {
             container_port = 3000
           }
 
-
           env_from {
             secret_ref {
               name = kubernetes_secret.this.metadata.0.name
             }
           }
 
+          env_from {
+            config_map_ref {
+              name = kubernetes_config_map.this.metadata.0.name
+            }
+          }
 
           resources {
             limits {
@@ -110,11 +121,10 @@ resource "kubernetes_deployment" "this" {
           dynamic "volume_mount" {
             for_each = var.enabled_localstorage ? [""] : []
             content {
-              name       = "grafana-storage"
+              name       = "grafana-volume"
               mount_path = "/var/lib/grafana"
             }
           }
-
         }
 
 
@@ -122,7 +132,7 @@ resource "kubernetes_deployment" "this" {
         dynamic "volume" {
           for_each = var.enabled_localstorage ? [""] : []
           content {
-            name = "grafana-storage"
+            name = "grafana-volume"
             persistent_volume_claim {
               claim_name = kubernetes_persistent_volume_claim.this.metadata.0.name
             }
@@ -145,7 +155,7 @@ resource "kubernetes_persistent_volume_claim" "this" {
     annotations = merge(
       local.annotations,
       var.annotations,
-      var.ingress_annotations
+      var.pvc_annotations
     )
     labels = merge(
       {
@@ -154,7 +164,7 @@ resource "kubernetes_persistent_volume_claim" "this" {
       },
       local.labels,
       var.labels,
-      var.ingress_labels
+      var.pvc_labels
     )
   }
 
@@ -248,7 +258,7 @@ resource "kubernetes_ingress" "this" {
 resource "kubernetes_service" "this" {
 
   metadata {
-    name      = var.kubernetes_service
+    name      = var.service_name
     namespace = var.namespace
 
     annotations = merge(
@@ -257,6 +267,10 @@ resource "kubernetes_service" "this" {
       var.service_annotations
     )
     labels = merge(
+      {
+        instance  = var.service_name
+        component = "network"
+      },
       local.labels,
       var.labels,
       var.service_labels
@@ -293,6 +307,10 @@ resource "kubernetes_service_account" "this" {
     )
 
     labels = merge(
+      {
+        instance  = var.service_account_name
+        component = "rbac"
+      },
       local.labels,
       var.labels,
       var.service_account_labels
@@ -315,7 +333,8 @@ resource "kubernetes_config_map" "this" {
     )
     labels = merge(
       {
-        instance = var.config_map_name
+        instance  = var.config_map_name
+        component = "configuration"
       },
       local.labels,
       var.labels,
@@ -342,6 +361,7 @@ resource "kubernetes_secret" "this" {
     labels = merge(
       {
         "instance" = var.secret_name
+        component  = "configuration"
       },
       local.labels,
       var.labels,

@@ -42,7 +42,7 @@ variable "replicas" {
   default     = 1
 }
 
-variable "deployment_annotations" {
+variable "deployment_template_annotations" {
   description = "Additionnal annotations that will be merged on the deployment."
   default     = {}
 }
@@ -125,6 +125,16 @@ variable "ingress_labels" {
   default     = {}
 }
 
+variable "pvc_annotations" {
+  description = "Map of annotations that will be applied on the ingress."
+  default     = {}
+}
+
+variable "pvc_labels" {
+  description = "Map of labels that will be applied on the ingress."
+  default     = {}
+}
+
 variable "ingress_host" {
   description = "Host on which the ingress wil be available (ex: nexus.example.com)."
   default     = "example.com"
@@ -151,11 +161,6 @@ For example, see folder examples/without-pvc.
 DOCUMENTATION
   type        = list(any)
   default     = []
-}
-
-variable "kubernetes_service" {
-  description = "Name of the service."
-  default     = "grafana"
 }
 
 variable "service_type" {
@@ -195,9 +200,10 @@ variable "config_map_labels" {
 }
 
 variable "configuration" {
-  description = "Configuration to use for grafana (must be a yaml string)."
+  description = "Configuration to use for grafana"
   type        = map(string)
-  default     = {}
+  default = { "GF_INSTALL_PLUGINS" = "grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel",
+  "GF_PATH_PROVISIONING" = "/etc/grafana/provisioning" }
 }
 
 variable "secret_name" {
@@ -221,9 +227,18 @@ variable "deploymnet_labels" {
 }
 
 variable "grafana_secret" {
-  description = "Secrets to use for grafana (must be a yaml string)."
-  type        = map(string)
-  default     = {}
+  # description = <<-DOCUMENTATION
+
+  # should contain grafana secret env variables, see the example below
+  #   For example, {
+  #   "grafana-root-password" = "${file("${path.module}/templates/grafana-root-password")}"
+  #   "datasources.yml" = "${file("${path.module}/templates/grafana/datasources.yml")}"
+  #   "dashboards.yml"  = "${file("${path.module}/templates/grafana/dashboards.yml")}"
+  # }
+  # DOCUMENTATION
+  type    = map(string)
+  default = { "grafana-root-password" = "test" }
+
 }
 
 variable "pvc_name" {
