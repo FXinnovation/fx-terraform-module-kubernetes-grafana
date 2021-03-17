@@ -34,7 +34,7 @@ resource "kubernetes_deployment" "this" {
     labels = merge(
       {
         instance  = var.deployment_name
-        component = application
+        component = "application"
       },
       local.labels,
       var.labels,
