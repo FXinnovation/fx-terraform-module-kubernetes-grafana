@@ -22,7 +22,7 @@ variable "deployment_template_labels" {
   default     = {}
 }
 
-variable "deployment_labels" {
+variable "deployment_annotations" {
   description = "Additionnal labels that will be merged on the deployment."
   default     = {}
 }

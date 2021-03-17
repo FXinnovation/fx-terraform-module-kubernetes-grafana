@@ -46,7 +46,7 @@ No Modules.
 | config\_map\_labels | Additionnal labels that will be merged for the config map. | `map` | `{}` | no |
 | config\_map\_name | Name of the config map that will be created. | `string` | `"grafana"` | no |
 | configuration | Configuration to use for grafana | `map(string)` | <pre>{<br>  "GF_INSTALL_PLUGINS": "grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel",<br>  "GF_PATH_PROVISIONING": "/etc/grafana/provisioning"<br>}</pre> | no |
-| deployment\_labels | Additionnal labels that will be merged on the deployment. | `map` | `{}` | no |
+| deployment\_annotations | Additionnal labels that will be merged on the deployment. | `map` | `{}` | no |
 | deployment\_name | Name of the deployment that will be create. | `string` | `"grafana"` | no |
 | deployment\_template\_annotations | Additionnal annotations that will be merged on the deployment. | `map` | `{}` | no |
 | deployment\_template\_labels | Map of annotations to apply to the namespace. | `map` | `{}` | no |
