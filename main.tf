@@ -9,7 +9,6 @@ locals {
     "part-of"    = "monitoring"
     "managed-by" = "terraform"
     "name"       = "grafana"
-    "component"  = "monitoring"
     "app"        = "grafana"
 
   }
@@ -32,17 +31,16 @@ resource "kubernetes_deployment" "this" {
     namespace = var.namespace
 
     labels = merge(
+      local.labels,
       {
         instance  = var.deployment_name
         component = "application"
       },
-      local.labels,
       var.labels,
       var.deploymnet_labels
     )
 
     annotations = merge(
-      {},
       local.annotations,
       var.annotations,
       var.deployment_annotations
@@ -68,18 +66,18 @@ resource "kubernetes_deployment" "this" {
     template {
       metadata {
         labels = merge(
+          local.labels,
           { selector  = "grafana-${random_string.selector.result}",
             instance  = var.deployment_name,
             component = "application"
           },
-          local.labels,
           var.labels,
           var.deployment_template_labels
         )
 
         annotations = merge(
-          { "configuration/hash" = sha256(join(", ", values(var.configuration))) },
           local.annotations,
+          { "configuration/hash" = sha256(join(", ", values(var.configuration))) },
           var.annotations,
           var.deployment_template_annotations
         )
@@ -158,11 +156,11 @@ resource "kubernetes_persistent_volume_claim" "this" {
       var.pvc_annotations
     )
     labels = merge(
+      local.labels,
       {
         instance  = var.pvc_name
         component = "storage"
       },
-      local.labels,
       var.labels,
       var.pvc_labels
     )
@@ -198,11 +196,11 @@ resource "kubernetes_ingress" "this" {
       var.ingress_annotations
     )
     labels = merge(
+      local.labels,
       {
         instance  = var.ingress_name
         component = "network"
       },
-      local.labels,
       var.labels,
       var.ingress_labels
     )
@@ -267,11 +265,11 @@ resource "kubernetes_service" "this" {
       var.service_annotations
     )
     labels = merge(
+      local.labels,
       {
         instance  = var.service_name
         component = "network"
       },
-      local.labels,
       var.labels,
       var.service_labels
     )
@@ -307,11 +305,11 @@ resource "kubernetes_service_account" "this" {
     )
 
     labels = merge(
+      local.labels,
       {
         instance  = var.service_account_name
         component = "rbac"
       },
-      local.labels,
       var.labels,
       var.service_account_labels
     )
@@ -328,15 +326,16 @@ resource "kubernetes_config_map" "this" {
     name      = var.config_map_name
     namespace = var.namespace
     annotations = merge(
+      local.annotations,
       var.annotations,
       var.config_map_annotations
     )
     labels = merge(
+      local.labels,
       {
         instance  = var.config_map_name
         component = "configuration"
       },
-      local.labels,
       var.labels,
       var.config_map_labels
     )
@@ -359,11 +358,11 @@ resource "kubernetes_secret" "this" {
       var.secret_annotations
     )
     labels = merge(
+      local.labels,
       {
         "instance" = var.secret_name
         component  = "configuration"
       },
-      local.labels,
       var.labels,
       var.secret_labels
     )

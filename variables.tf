@@ -5,26 +5,31 @@
 variable "annotations" {
   description = "Map of annotations that will be merged with all other annotations on all kubernetes resources."
   default     = {}
+  type        = map(string)
 }
 
 variable "labels" {
   description = "Map of labels that will be merged with all other labels on all kubernetes resource."
   default     = {}
+  type        = map(string)
 }
 
 variable "namespace" {
   description = "Namespace in which the module will be deployed."
   default     = "grafana"
+  type        = string
 }
 
 variable "deployment_template_labels" {
   description = "Map of annotations to apply to the namespace."
   default     = {}
+  type        = map(string)
 }
 
 variable "deployment_annotations" {
   description = "Additionnal labels that will be merged on the deployment."
   default     = {}
+  type        = map(string)
 }
 #####
 # Application
@@ -35,46 +40,55 @@ variable "deployment_annotations" {
 variable "deployment_name" {
   description = "Name of the deployment that will be create."
   default     = "grafana"
+  type        = string
 }
 
 variable "replicas" {
   description = "Number of replicas to deploy."
   default     = 1
+  type        = number
 }
 
 variable "deployment_template_annotations" {
   description = "Additionnal annotations that will be merged on the deployment."
   default     = {}
+  type        = map(string)
 }
 
 variable "image" {
   description = "Image to use."
   default     = "grafana/grafana"
+  type        = string
 }
 
 variable "image_version" {
   description = "Version of the image to use."
   default     = "5.4.3"
+  type        = string
 }
 
 variable "resources_requests_cpu" {
   description = "Amount of cpu time that the application requests."
   default     = "1"
+  type        = string
 }
 
 variable "resources_requests_memory" {
   description = "Amount of memory that the application requests."
   default     = "2048Mi"
+  type        = string
 }
 
 variable "resources_limits_cpu" {
   description = "Amount of cpu time that the application limits."
   default     = "2"
+  type        = string
 }
 
 variable "resources_limits_memory" {
   description = "Amount of memory that the application limits."
   default     = "4096Mi"
+  type        = string
 }
 
 #####
@@ -84,21 +98,25 @@ variable "resources_limits_memory" {
 variable "service_name" {
   description = "Name of the service."
   default     = "grafana"
+  type        = string
 }
 
 variable "service_annotations" {
   description = "Map of annotations that will be applied on the service."
   default     = {}
+  type        = map(string)
 }
 
 variable "service_labels" {
   description = "Map of labels that will be applied on the service."
   default     = {}
+  type        = map(string)
 }
 
 variable "enabled_localstorage" {
-  type    = bool
-  default = true
+  description = "should local storage be enabled for grafana"
+  type        = bool
+  default     = true
 }
 
 #####
@@ -108,46 +126,55 @@ variable "enabled_localstorage" {
 variable "ingress_enabled" {
   description = "Whether or not to enable the ingress."
   default     = true
+  type        = bool
 }
 
 variable "ingress_name" {
   description = "Name of the ingress."
   default     = "grafana"
+  type        = string
 }
 
 variable "ingress_annotations" {
   description = "Map of annotations that will be applied on the ingress."
   default     = {}
+  type        = map(string)
 }
 
 variable "ingress_labels" {
   description = "Map of labels that will be applied on the ingress."
   default     = {}
+  type        = map(string)
 }
 
 variable "pvc_annotations" {
   description = "Map of annotations that will be applied on the ingress."
   default     = {}
+  type        = map(string)
 }
 
 variable "pvc_labels" {
   description = "Map of labels that will be applied on the ingress."
   default     = {}
+  type        = map(string)
 }
 
 variable "ingress_host" {
-  description = "Host on which the ingress wil be available (ex: nexus.example.com)."
-  default     = "example.com"
+  description = "Host on which the ingress wil be available (ex: grafana.example.com)."
+  default     = "grafana.example.com"
+  type        = string
 }
 
 variable "ingress_tls_enabled" {
   description = "Whether or not TLS should be enabled on the ingress."
   default     = true
+  type        = bool
 }
 
 variable "ingress_tls_secret_name" {
   description = "Name of the secret to use to put TLS on the ingress."
   default     = "grafana"
+  type        = string
 }
 
 variable "additionnal_ingress_paths" {
@@ -172,31 +199,37 @@ variable "service_type" {
 variable "service_account_name" {
   description = "name of the service account"
   default     = "grafana"
+  type        = string
 }
 
 variable "service_account_annotations" {
   description = "Map of annotations that is merged on the service account."
   default     = {}
+  type        = map(string)
 }
 
 variable "service_account_labels" {
   description = "Map of labels that is merged on the service account."
   default     = {}
+  type        = map(string)
 }
 
 variable "config_map_name" {
   description = "Name of the config map that will be created."
   default     = "grafana"
+  type        = string
 }
 
 variable "config_map_annotations" {
   description = "Additionnal annotations that will be merged for the config map."
   default     = {}
+  type        = map(string)
 }
 
 variable "config_map_labels" {
   description = "Additionnal labels that will be merged for the config map."
   default     = {}
+  type        = map(string)
 }
 
 variable "configuration" {
@@ -209,21 +242,25 @@ variable "configuration" {
 variable "secret_name" {
   description = "Name of the secret that will be created."
   default     = "grafana"
+  type        = string
 }
 
 variable "secret_annotations" {
   description = "Additionnal annotations that will be merged for the secret."
   default     = {}
+  type        = map(string)
 }
 
 variable "secret_labels" {
   description = "Additionnal labels that will be merged for the secret."
   default     = {}
+  type        = map(string)
 }
 
 variable "deploymnet_labels" {
   description = "deploymnet labels  that will be merged for the deployment."
   default     = {}
+  type        = map(string)
 }
 
 variable "grafana_secret" {
@@ -268,9 +305,11 @@ variable "pvc_volume_name" {
 variable "pvc_wait_until_bound" {
   description = "Whether to wait for the claim to reach Bound state (to find volume in which to claim the space)"
   default     = false
+  type        = bool
 }
 
 variable "pvc_access_modes" {
   description = "A set of the desired access modes the volume should have."
   default     = ["ReadWriteOnce"]
+  type        = list(string)
 }
