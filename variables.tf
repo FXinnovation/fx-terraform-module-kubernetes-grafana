@@ -63,31 +63,31 @@ variable "image" {
 
 variable "image_version" {
   description = "Version of the image to use."
-  default     = "5.4.3"
+  default     = "latest"
   type        = string
 }
 
 variable "resources_requests_cpu" {
   description = "Amount of cpu time that the application requests."
-  default     = "1"
+  default     = "100m"
   type        = string
 }
 
 variable "resources_requests_memory" {
   description = "Amount of memory that the application requests."
-  default     = "2048Mi"
+  default     = "256Mi"
   type        = string
 }
 
 variable "resources_limits_cpu" {
   description = "Amount of cpu time that the application limits."
-  default     = "2"
+  default     = "500m"
   type        = string
 }
 
 variable "resources_limits_memory" {
   description = "Amount of memory that the application limits."
-  default     = "4096Mi"
+  default     = "512Mi"
   type        = string
 }
 
@@ -233,10 +233,9 @@ variable "config_map_labels" {
 }
 
 variable "configuration" {
-  description = "Configuration to use for grafana"
+  description = "Configuration to use for grafana, all the key pairs will be mounted as env variables not as a file "
   type        = map(string)
-  default = { "GF_INSTALL_PLUGINS" = "grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel",
-  "GF_PATH_PROVISIONING" = "/etc/grafana/provisioning" }
+  default     = {}
 }
 
 variable "secret_name" {
@@ -263,17 +262,17 @@ variable "deploymnet_labels" {
   type        = map(string)
 }
 
-variable "grafana_secret" {
+variable "secret_configuration" {
   description = <<-DOCUMENTATION
 
   # should contain grafana secret env variables, see the example below
   #   For example, {
-  #   { "GF_SECURITY_ADMIN_PASSWORD" = "test" }
+  #   { "GF_SECURITY_ADMIN_PASSWORD" = "xxxxx" }
   # }
   #
    DOCUMENTATION
   type        = map(string)
-  default     = { "GF_SECURITY_ADMIN_PASSWORD" = "test" }
+  default     = {}
 
 }
 

@@ -5,11 +5,11 @@
 locals {
   annotations = {}
   labels = {
-    "version"    = var.image_version
-    "part-of"    = "monitoring"
-    "managed-by" = "terraform"
-    "name"       = "grafana"
-    "app"        = "grafana"
+    "version"     = var.image_version
+    "part-of"     = "monitoring"
+    "managed-by"  = "terraform"
+    "name"        = "grafana"
+    "application" = "grafana"
 
   }
 }
@@ -67,7 +67,8 @@ resource "kubernetes_deployment" "this" {
       metadata {
         labels = merge(
           local.labels,
-          { selector  = "grafana-${random_string.selector.result}",
+          {
+            selector  = "grafana-${random_string.selector.result}",
             instance  = var.deployment_name,
             component = "application"
           },
@@ -368,7 +369,7 @@ resource "kubernetes_secret" "this" {
     )
   }
 
-  data = var.grafana_secret
+  data = var.secret_configuration
 
   type = "Opaque"
 }

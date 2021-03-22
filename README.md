@@ -44,16 +44,15 @@ No Modules.
 | config\_map\_annotations | Additionnal annotations that will be merged for the config map. | `map(string)` | `{}` | no |
 | config\_map\_labels | Additionnal labels that will be merged for the config map. | `map(string)` | `{}` | no |
 | config\_map\_name | Name of the config map that will be created. | `string` | `"grafana"` | no |
-| configuration | Configuration to use for grafana | `map(string)` | <pre>{<br>  "GF_INSTALL_PLUGINS": "grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel",<br>  "GF_PATH_PROVISIONING": "/etc/grafana/provisioning"<br>}</pre> | no |
+| configuration | Configuration to use for grafana, all the key pairs will be mounted as env variables not as a file | `map(string)` | `{}` | no |
 | deployment\_annotations | Additionnal labels that will be merged on the deployment. | `map(string)` | `{}` | no |
 | deployment\_name | Name of the deployment that will be create. | `string` | `"grafana"` | no |
 | deployment\_template\_annotations | Additionnal annotations that will be merged on the deployment. | `map(string)` | `{}` | no |
 | deployment\_template\_labels | Map of annotations to apply to the namespace. | `map(string)` | `{}` | no |
 | deploymnet\_labels | deploymnet labels  that will be merged for the deployment. | `map(string)` | `{}` | no |
 | enabled\_localstorage | should local storage be enabled for grafana | `bool` | `true` | no |
-| grafana\_secret | # should contain grafana secret env variables, see the example below<br>#   For example, {<br>#   { "GF\_SECURITY\_ADMIN\_PASSWORD" = "test" }<br># }<br># | `map(string)` | <pre>{<br>  "GF_SECURITY_ADMIN_PASSWORD": "test"<br>}</pre> | no |
 | image | Image to use. | `string` | `"grafana/grafana"` | no |
-| image\_version | Version of the image to use. | `string` | `"5.4.3"` | no |
+| image\_version | Version of the image to use. | `string` | `"latest"` | no |
 | ingress\_annotations | Map of annotations that will be applied on the ingress. | `map(string)` | `{}` | no |
 | ingress\_enabled | Whether or not to enable the ingress. | `bool` | `true` | no |
 | ingress\_host | Host on which the ingress wil be available (ex: grafana.example.com). | `string` | `"grafana.example.com"` | no |
@@ -72,11 +71,12 @@ No Modules.
 | pvc\_volume\_name | Name of the volume bound to the persistent volume claim. | `string` | `""` | no |
 | pvc\_wait\_until\_bound | Whether to wait for the claim to reach Bound state (to find volume in which to claim the space) | `bool` | `false` | no |
 | replicas | Number of replicas to deploy. | `number` | `1` | no |
-| resources\_limits\_cpu | Amount of cpu time that the application limits. | `string` | `"2"` | no |
-| resources\_limits\_memory | Amount of memory that the application limits. | `string` | `"4096Mi"` | no |
-| resources\_requests\_cpu | Amount of cpu time that the application requests. | `string` | `"1"` | no |
-| resources\_requests\_memory | Amount of memory that the application requests. | `string` | `"2048Mi"` | no |
+| resources\_limits\_cpu | Amount of cpu time that the application limits. | `string` | `"500m"` | no |
+| resources\_limits\_memory | Amount of memory that the application limits. | `string` | `"512Mi"` | no |
+| resources\_requests\_cpu | Amount of cpu time that the application requests. | `string` | `"100m"` | no |
+| resources\_requests\_memory | Amount of memory that the application requests. | `string` | `"256Mi"` | no |
 | secret\_annotations | Additionnal annotations that will be merged for the secret. | `map(string)` | `{}` | no |
+| secret\_configuration | # should contain grafana secret env variables, see the example below<br>#   For example, {<br>#   { "GF\_SECURITY\_ADMIN\_PASSWORD" = "xxxxx" }<br># }<br># | `map(string)` | `{}` | no |
 | secret\_labels | Additionnal labels that will be merged for the secret. | `map(string)` | `{}` | no |
 | secret\_name | Name of the secret that will be created. | `string` | `"grafana"` | no |
 | service\_account\_annotations | Map of annotations that is merged on the service account. | `map(string)` | `{}` | no |
