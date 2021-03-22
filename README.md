@@ -51,7 +51,7 @@ No Modules.
 | deployment\_template\_labels | Map of annotations to apply to the namespace. | `map(string)` | `{}` | no |
 | deploymnet\_labels | deploymnet labels  that will be merged for the deployment. | `map(string)` | `{}` | no |
 | enabled\_localstorage | should local storage be enabled for grafana | `bool` | `true` | no |
-| grafana\_secret | n/a | `map(string)` | <pre>{<br>  "GF_SECURITY_ADMIN_PASSWORD": "test"<br>}</pre> | no |
+| grafana\_secret | # should contain grafana secret env variables, see the example below<br>#   For example, {<br>#   { "GF\_SECURITY\_ADMIN\_PASSWORD" = "test" }<br># }<br># | `map(string)` | <pre>{<br>  "GF_SECURITY_ADMIN_PASSWORD": "test"<br>}</pre> | no |
 | image | Image to use. | `string` | `"grafana/grafana"` | no |
 | image\_version | Version of the image to use. | `string` | `"5.4.3"` | no |
 | ingress\_annotations | Map of annotations that will be applied on the ingress. | `map(string)` | `{}` | no |

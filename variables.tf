@@ -264,17 +264,16 @@ variable "deploymnet_labels" {
 }
 
 variable "grafana_secret" {
-  # description = <<-DOCUMENTATION
+  description = <<-DOCUMENTATION
 
   # should contain grafana secret env variables, see the example below
   #   For example, {
-  #   "grafana-root-password" = "${file("${path.module}/templates/grafana-root-password")}"
-  #   "datasources.yml" = "${file("${path.module}/templates/grafana/datasources.yml")}"
-  #   "dashboards.yml"  = "${file("${path.module}/templates/grafana/dashboards.yml")}"
+  #   { "GF_SECURITY_ADMIN_PASSWORD" = "test" }
   # }
-  # DOCUMENTATION
-  type    = map(string)
-  default = { "GF_SECURITY_ADMIN_PASSWORD" = "test" }
+  #
+   DOCUMENTATION
+  type        = map(string)
+  default     = { "GF_SECURITY_ADMIN_PASSWORD" = "test" }
 
 }
 
