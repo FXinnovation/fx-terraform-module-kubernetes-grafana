@@ -144,6 +144,7 @@ resource "kubernetes_deployment" "this" {
 #####
 
 resource "kubernetes_persistent_volume_claim" "this" {
+  wait_until_bound = var.pvc_wait_until_bound
   metadata {
     name      = var.pvc_name
     namespace = var.namespace
@@ -165,7 +166,6 @@ resource "kubernetes_persistent_volume_claim" "this" {
 
   spec {
     access_modes       = var.pvc_access_modes
-    wait_until_bound   = var.pvc_wait_until_bound
     storage_class_name = var.pvc_storage_class_name
     resources {
       requests = {
