@@ -25,11 +25,14 @@ resource "random_string" "selector" {
   length  = 8
 }
 
+#####
+# Deployment
+#####
+
 resource "kubernetes_deployment" "this" {
   metadata {
     name      = var.deployment_name
     namespace = var.namespace
-
     labels = merge(
       local.labels,
       {
@@ -39,13 +42,11 @@ resource "kubernetes_deployment" "this" {
       var.labels,
       var.deploymnet_labels
     )
-
     annotations = merge(
       local.annotations,
       var.annotations,
       var.deployment_annotations
     )
-
   }
 
   spec {
@@ -75,7 +76,6 @@ resource "kubernetes_deployment" "this" {
           var.labels,
           var.deployment_template_labels
         )
-
         annotations = merge(
           local.annotations,
           { "configuration/hash" = sha256(join(", ", values(var.configuration))) },
@@ -85,7 +85,8 @@ resource "kubernetes_deployment" "this" {
       }
 
       spec {
-        service_account_name = kubernetes_service_account.this.metadata.0.name
+        service_account_name            = kubernetes_service_account.this.metadata.0.name
+        automount_service_account_token = true
         container {
           name  = "grafana"
           image = format("%s:%s", var.image, var.image_version)
@@ -93,19 +94,16 @@ resource "kubernetes_deployment" "this" {
             name           = "http"
             container_port = 3000
           }
-
           env_from {
             secret_ref {
               name = kubernetes_secret.this.metadata.0.name
             }
           }
-
           env_from {
             config_map_ref {
               name = kubernetes_config_map.this.metadata.0.name
             }
           }
-
           resources {
             limits {
               cpu    = var.resources_limits_cpu
@@ -126,8 +124,6 @@ resource "kubernetes_deployment" "this" {
           }
         }
 
-
-
         dynamic "volume" {
           for_each = var.enabled_localstorage ? [""] : []
           content {
@@ -138,18 +134,18 @@ resource "kubernetes_deployment" "this" {
           }
         }
 
-
-        automount_service_account_token = true
-
       }
     }
   }
 }
 
+#####
+# PVC
+#####
+
 resource "kubernetes_persistent_volume_claim" "this" {
   metadata {
-    name = var.pvc_name
-
+    name      = var.pvc_name
     namespace = var.namespace
     annotations = merge(
       local.annotations,
@@ -168,17 +164,16 @@ resource "kubernetes_persistent_volume_claim" "this" {
   }
 
   spec {
-    access_modes = var.pvc_access_modes
+    access_modes       = var.pvc_access_modes
+    wait_until_bound   = var.pvc_wait_until_bound
+    storage_class_name = var.pvc_storage_class_name
     resources {
       requests = {
         storage = var.pvc_storage
       }
     }
-    storage_class_name = var.pvc_storage_class_name
-    volume_name        = var.pvc_volume_name
-
+    volume_name = var.pvc_volume_name
   }
-  wait_until_bound = var.pvc_wait_until_bound
 }
 
 #####
@@ -187,7 +182,6 @@ resource "kubernetes_persistent_volume_claim" "this" {
 
 resource "kubernetes_ingress" "this" {
   count = var.ingress_enabled ? 1 : 0
-
   metadata {
     name      = var.ingress_name
     namespace = var.namespace
@@ -206,13 +200,11 @@ resource "kubernetes_ingress" "this" {
       var.ingress_labels
     )
   }
-
   spec {
     backend {
       service_name = kubernetes_service.this.metadata.0.name
       service_port = "http"
     }
-
     rule {
       host = var.ingress_host
       http {
@@ -226,22 +218,18 @@ resource "kubernetes_ingress" "this" {
 
         dynamic "path" {
           for_each = var.additionnal_ingress_paths
-
           content {
             backend {
               service_name = lookup(path.value, "service_name", kubernetes_service.this.metadata.0.name)
               service_port = lookup(path.value, "service_port", "http")
             }
-
             path = lookup(path.value, "path", null)
           }
         }
       }
     }
-
     dynamic "tls" {
       for_each = var.ingress_tls_enabled ? [1] : []
-
       content {
         secret_name = var.ingress_tls_secret_name
         hosts       = [var.ingress_host]
@@ -255,11 +243,9 @@ resource "kubernetes_ingress" "this" {
 #####
 
 resource "kubernetes_service" "this" {
-
   metadata {
     name      = var.service_name
     namespace = var.namespace
-
     annotations = merge(
       local.annotations,
       var.annotations,
@@ -275,7 +261,6 @@ resource "kubernetes_service" "this" {
       var.service_labels
     )
   }
-
   spec {
     selector = { selector = "grafana-${random_string.selector.result}" }
     port {
@@ -283,7 +268,6 @@ resource "kubernetes_service" "this" {
       port        = 80
       target_port = "http"
     }
-
     type = var.service_type
   }
 }
@@ -293,18 +277,14 @@ resource "kubernetes_service" "this" {
 #####
 
 resource "kubernetes_service_account" "this" {
-
-
   metadata {
     name      = var.service_account_name
     namespace = var.namespace
-
     annotations = merge(
       local.annotations,
       var.annotations,
       var.service_account_annotations
     )
-
     labels = merge(
       local.labels,
       {
@@ -322,7 +302,6 @@ resource "kubernetes_service_account" "this" {
 #####
 
 resource "kubernetes_config_map" "this" {
-
   metadata {
     name      = var.config_map_name
     namespace = var.namespace
@@ -350,7 +329,6 @@ resource "kubernetes_config_map" "this" {
 #####
 
 resource "kubernetes_secret" "this" {
-
   metadata {
     name      = var.secret_name
     namespace = var.namespace
@@ -368,8 +346,6 @@ resource "kubernetes_secret" "this" {
       var.secret_labels
     )
   }
-
   data = var.secret_configuration
-
   type = "Opaque"
 }

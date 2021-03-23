@@ -31,11 +31,10 @@ variable "deployment_annotations" {
   default     = {}
   type        = map(string)
 }
+
 #####
 # Application
 #####
-
-
 
 variable "deployment_name" {
   description = "Name of the deployment that will be create."
@@ -193,7 +192,7 @@ DOCUMENTATION
 variable "service_type" {
   description = "type of service"
   type        = string
-  default     = "NodePort"
+  default     = "ClusterIP"
 }
 
 variable "service_account_name" {
@@ -264,12 +263,10 @@ variable "deploymnet_labels" {
 
 variable "secret_configuration" {
   description = <<-DOCUMENTATION
-
-  # should contain grafana secret env variables, see the example below
-  #   For example, {
-  #   { "GF_SECURITY_ADMIN_PASSWORD" = "xxxxx" }
-  # }
-  #
+   should contain grafana secret env variables, see the example below
+     For example, {
+     { "GF_SECURITY_ADMIN_PASSWORD" = "xxxxx" }
+   }
    DOCUMENTATION
   type        = map(string)
   default     = {}

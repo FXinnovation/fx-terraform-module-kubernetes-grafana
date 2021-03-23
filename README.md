@@ -76,7 +76,7 @@ No Modules.
 | resources\_requests\_cpu | Amount of cpu time that the application requests. | `string` | `"100m"` | no |
 | resources\_requests\_memory | Amount of memory that the application requests. | `string` | `"256Mi"` | no |
 | secret\_annotations | Additionnal annotations that will be merged for the secret. | `map(string)` | `{}` | no |
-| secret\_configuration | # should contain grafana secret env variables, see the example below<br>#   For example, {<br>#   { "GF\_SECURITY\_ADMIN\_PASSWORD" = "xxxxx" }<br># }<br># | `map(string)` | `{}` | no |
+| secret\_configuration | should contain grafana secret env variables, see the example below<br>  For example, {<br>  { "GF\_SECURITY\_ADMIN\_PASSWORD" = "xxxxx" }<br>} | `map(string)` | `{}` | no |
 | secret\_labels | Additionnal labels that will be merged for the secret. | `map(string)` | `{}` | no |
 | secret\_name | Name of the secret that will be created. | `string` | `"grafana"` | no |
 | service\_account\_annotations | Map of annotations that is merged on the service account. | `map(string)` | `{}` | no |
@@ -85,7 +85,7 @@ No Modules.
 | service\_annotations | Map of annotations that will be applied on the service. | `map(string)` | `{}` | no |
 | service\_labels | Map of labels that will be applied on the service. | `map(string)` | `{}` | no |
 | service\_name | Name of the service. | `string` | `"grafana"` | no |
-| service\_type | type of service | `string` | `"NodePort"` | no |
+| service\_type | type of service | `string` | `"ClusterIP"` | no |
 
 ## Outputs
 
@@ -100,7 +100,9 @@ No Modules.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Versioning
+
 This repository follows [Semantic Versioning 2.0.0](https://semver.org/)
 
 ## Git Hooks
+
 This repository uses [pre-commit](https://pre-commit.com/) hooks.
