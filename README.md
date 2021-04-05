@@ -43,7 +43,7 @@ No Modules.
 | annotations | Map of annotations that will be merged with all other annotations on all kubernetes resources. | `map(string)` | `{}` | no |
 | config\_map\_annotations | Additionnal annotations that will be merged for the config map. | `map(string)` | `{}` | no |
 | config\_map\_labels | Additionnal labels that will be merged for the config map. | `map(string)` | `{}` | no |
-| config\_map\_name | Name of the config map that will be created. | `string` | `"grafana"` | no |
+| config\_map\_name\_prefix | Prefix of the config maps that will be created. | `string` | `"grafana"` | no |
 | configuration | Configuration to use for grafana, all the key pairs will be mounted as env variables not as a file | `map(string)` | `{}` | no |
 | deployment\_annotations | Additionnal labels that will be merged on the deployment. | `map(string)` | `{}` | no |
 | deployment\_name | Name of the deployment that will be create. | `string` | `"grafana"` | no |
@@ -61,6 +61,7 @@ No Modules.
 | ingress\_tls\_enabled | Whether or not TLS should be enabled on the ingress. | `bool` | `true` | no |
 | ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"grafana"` | no |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map(string)` | `{}` | no |
+| ldap\_configuration | Content of the ldap.toml file that will be used for ldap configuration. (LDAP needs to be enabled in the configuration to take effect.) | `string` | `""` | no |
 | namespace | Namespace in which the module will be deployed. | `string` | `"grafana"` | no |
 | pvc\_access\_modes | A set of the desired access modes the volume should have. | `list(string)` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
 | pvc\_annotations | Map of annotations that will be applied on the ingress. | `map(string)` | `{}` | no |
@@ -91,8 +92,9 @@ No Modules.
 
 | Name | Description |
 |------|-------------|
-| config\_map | n/a |
 | deployment | n/a |
+| environment\_config\_map | n/a |
+| files\_config\_map | n/a |
 | ingress | n/a |
 | secret | n/a |
 | service | n/a |

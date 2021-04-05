@@ -90,20 +90,29 @@ resource "kubernetes_deployment" "this" {
         container {
           name  = "grafana"
           image = format("%s:%s", var.image, var.image_version)
+
           port {
             name           = "http"
             container_port = 3000
           }
+
           env_from {
             secret_ref {
               name = kubernetes_secret.this.metadata.0.name
             }
           }
+
           env_from {
             config_map_ref {
-              name = kubernetes_config_map.this.metadata.0.name
+              name = kubernetes_config_map.environment.metadata.0.name
             }
           }
+
+          env {
+            name  = "GF_AUTH_LDAP_CONFIG_FILE"
+            value = "/configuration/ldap.toml"
+          }
+
           resources {
             limits {
               cpu    = var.resources_limits_cpu
@@ -113,6 +122,11 @@ resource "kubernetes_deployment" "this" {
               cpu    = var.resources_requests_cpu
               memory = var.resources_requests_memory
             }
+          }
+
+          volume_mount {
+            name       = "configuration-volume"
+            mount_path = "/configuration"
           }
 
           dynamic "volume_mount" {
@@ -134,6 +148,13 @@ resource "kubernetes_deployment" "this" {
           }
         }
 
+        volume {
+          name = "configuration-volume"
+          config_map {
+            default_mode = "0444"
+            name         = kubernetes_config_map.files.metadata.0.name
+          }
+        }
       }
     }
   }
@@ -301,9 +322,9 @@ resource "kubernetes_service_account" "this" {
 # ConfigMap
 #####
 
-resource "kubernetes_config_map" "this" {
+resource "kubernetes_config_map" "environment" {
   metadata {
-    name      = var.config_map_name
+    name      = format("%s-environment", var.config_map_name_prefix)
     namespace = var.namespace
     annotations = merge(
       local.annotations,
@@ -313,7 +334,7 @@ resource "kubernetes_config_map" "this" {
     labels = merge(
       local.labels,
       {
-        instance  = var.config_map_name
+        instance  = format("%s-environment", var.config_map_name_prefix)
         component = "configuration"
       },
       var.labels,
@@ -322,6 +343,31 @@ resource "kubernetes_config_map" "this" {
   }
 
   data = var.configuration
+}
+
+resource "kubernetes_config_map" "files" {
+  metadata {
+    name      = format("%s-files", var.config_map_name_prefix)
+    namespace = var.namespace
+    annotations = merge(
+      local.annotations,
+      var.annotations,
+      var.config_map_annotations
+    )
+    labels = merge(
+      local.labels,
+      {
+        instance  = format("%s-files", var.config_map_name_prefix)
+        component = "configuration"
+      },
+      var.labels,
+      var.config_map_labels
+    )
+  }
+
+  data = {
+    "ldap.toml" = var.ldap_configuration
+  }
 }
 
 #####

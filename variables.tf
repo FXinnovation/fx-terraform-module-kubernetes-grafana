@@ -20,6 +20,57 @@ variable "namespace" {
   type        = string
 }
 
+variable "enabled_localstorage" {
+  description = "should local storage be enabled for grafana"
+  type        = bool
+  default     = true
+}
+
+#####
+# Application
+#####
+
+variable "ldap_configuration" {
+  description = "Content of the ldap.toml file that will be used for ldap configuration. (LDAP needs to be enabled in the configuration to take effect.)"
+  default     = ""
+  type        = string
+}
+
+
+variable "configuration" {
+  description = "Configuration to use for grafana, all the key pairs will be mounted as env variables not as a file "
+  type        = map(string)
+  default     = {}
+}
+
+variable "secret_configuration" {
+  description = <<-DOCUMENTATION
+   should contain grafana secret env variables, see the example below
+     For example, {
+     { "GF_SECURITY_ADMIN_PASSWORD" = "xxxxx" }
+   }
+   DOCUMENTATION
+  type        = map(string)
+  default     = {}
+}
+
+#####
+# Deployment
+#####
+
+variable "deployment_name" {
+  description = "Name of the deployment that will be create."
+  default     = "grafana"
+  type        = string
+}
+
+variable "deploymnet_labels" {
+  description = "deploymnet labels  that will be merged for the deployment."
+  default     = {}
+  type        = map(string)
+}
+
+
 variable "deployment_template_labels" {
   description = "Map of annotations to apply to the namespace."
   default     = {}
@@ -30,16 +81,6 @@ variable "deployment_annotations" {
   description = "Additionnal labels that will be merged on the deployment."
   default     = {}
   type        = map(string)
-}
-
-#####
-# Application
-#####
-
-variable "deployment_name" {
-  description = "Name of the deployment that will be create."
-  default     = "grafana"
-  type        = string
 }
 
 variable "replicas" {
@@ -100,6 +141,12 @@ variable "service_name" {
   type        = string
 }
 
+variable "service_type" {
+  description = "type of service"
+  type        = string
+  default     = "ClusterIP"
+}
+
 variable "service_annotations" {
   description = "Map of annotations that will be applied on the service."
   default     = {}
@@ -110,12 +157,6 @@ variable "service_labels" {
   description = "Map of labels that will be applied on the service."
   default     = {}
   type        = map(string)
-}
-
-variable "enabled_localstorage" {
-  description = "should local storage be enabled for grafana"
-  type        = bool
-  default     = true
 }
 
 #####
@@ -141,18 +182,6 @@ variable "ingress_annotations" {
 }
 
 variable "ingress_labels" {
-  description = "Map of labels that will be applied on the ingress."
-  default     = {}
-  type        = map(string)
-}
-
-variable "pvc_annotations" {
-  description = "Map of annotations that will be applied on the ingress."
-  default     = {}
-  type        = map(string)
-}
-
-variable "pvc_labels" {
   description = "Map of labels that will be applied on the ingress."
   default     = {}
   type        = map(string)
@@ -189,89 +218,10 @@ DOCUMENTATION
   default     = []
 }
 
-variable "service_type" {
-  description = "type of service"
-  type        = string
-  default     = "ClusterIP"
-}
 
-variable "service_account_name" {
-  description = "name of the service account"
-  default     = "grafana"
-  type        = string
-}
-
-variable "service_account_annotations" {
-  description = "Map of annotations that is merged on the service account."
-  default     = {}
-  type        = map(string)
-}
-
-variable "service_account_labels" {
-  description = "Map of labels that is merged on the service account."
-  default     = {}
-  type        = map(string)
-}
-
-variable "config_map_name" {
-  description = "Name of the config map that will be created."
-  default     = "grafana"
-  type        = string
-}
-
-variable "config_map_annotations" {
-  description = "Additionnal annotations that will be merged for the config map."
-  default     = {}
-  type        = map(string)
-}
-
-variable "config_map_labels" {
-  description = "Additionnal labels that will be merged for the config map."
-  default     = {}
-  type        = map(string)
-}
-
-variable "configuration" {
-  description = "Configuration to use for grafana, all the key pairs will be mounted as env variables not as a file "
-  type        = map(string)
-  default     = {}
-}
-
-variable "secret_name" {
-  description = "Name of the secret that will be created."
-  default     = "grafana"
-  type        = string
-}
-
-variable "secret_annotations" {
-  description = "Additionnal annotations that will be merged for the secret."
-  default     = {}
-  type        = map(string)
-}
-
-variable "secret_labels" {
-  description = "Additionnal labels that will be merged for the secret."
-  default     = {}
-  type        = map(string)
-}
-
-variable "deploymnet_labels" {
-  description = "deploymnet labels  that will be merged for the deployment."
-  default     = {}
-  type        = map(string)
-}
-
-variable "secret_configuration" {
-  description = <<-DOCUMENTATION
-   should contain grafana secret env variables, see the example below
-     For example, {
-     { "GF_SECURITY_ADMIN_PASSWORD" = "xxxxx" }
-   }
-   DOCUMENTATION
-  type        = map(string)
-  default     = {}
-
-}
+#####
+# PVC
+#####
 
 variable "pvc_name" {
   description = "Name of the PVC for gradfana"
@@ -307,4 +257,82 @@ variable "pvc_access_modes" {
   description = "A set of the desired access modes the volume should have."
   default     = ["ReadWriteOnce"]
   type        = list(string)
+}
+
+variable "pvc_annotations" {
+  description = "Map of annotations that will be applied on the ingress."
+  default     = {}
+  type        = map(string)
+}
+
+variable "pvc_labels" {
+  description = "Map of labels that will be applied on the ingress."
+  default     = {}
+  type        = map(string)
+}
+
+#####
+# Service Accont
+#####
+
+variable "service_account_name" {
+  description = "name of the service account"
+  default     = "grafana"
+  type        = string
+}
+
+variable "service_account_annotations" {
+  description = "Map of annotations that is merged on the service account."
+  default     = {}
+  type        = map(string)
+}
+
+variable "service_account_labels" {
+  description = "Map of labels that is merged on the service account."
+  default     = {}
+  type        = map(string)
+}
+
+#####
+# Config Map
+#####
+
+variable "config_map_name_prefix" {
+  description = "Prefix of the config maps that will be created."
+  default     = "grafana"
+  type        = string
+}
+
+variable "config_map_annotations" {
+  description = "Additionnal annotations that will be merged for the config map."
+  default     = {}
+  type        = map(string)
+}
+
+variable "config_map_labels" {
+  description = "Additionnal labels that will be merged for the config map."
+  default     = {}
+  type        = map(string)
+}
+
+#####
+# Secret
+#####
+
+variable "secret_name" {
+  description = "Name of the secret that will be created."
+  default     = "grafana"
+  type        = string
+}
+
+variable "secret_annotations" {
+  description = "Additionnal annotations that will be merged for the secret."
+  default     = {}
+  type        = map(string)
+}
+
+variable "secret_labels" {
+  description = "Additionnal labels that will be merged for the secret."
+  default     = {}
+  type        = map(string)
 }

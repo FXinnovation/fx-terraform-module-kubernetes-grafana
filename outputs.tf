@@ -20,6 +20,10 @@ output "service_account" {
   value = kubernetes_service_account.this
 }
 
-output "config_map" {
-  value = kubernetes_config_map.this
+output "environment_config_map" {
+  value = kubernetes_config_map.environment
+}
+
+output "files_config_map" {
+  value = kubernetes_config_map.files
 }
