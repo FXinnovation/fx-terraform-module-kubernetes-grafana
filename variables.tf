@@ -159,12 +159,6 @@ variable "service_labels" {
   type        = map(string)
 }
 
-variable "enabled_localstorage" {
-  description = "should local storage be enabled for grafana"
-  type        = bool
-  default     = true
-}
-
 variable "enabled_security_context" {
   description = "should security contect be enabled for grafana pods"
   type        = bool
