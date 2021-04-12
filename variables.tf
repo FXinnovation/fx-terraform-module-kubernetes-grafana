@@ -159,6 +159,18 @@ variable "service_labels" {
   type        = map(string)
 }
 
+variable "enabled_security_context" {
+  description = "should security contect be enabled for grafana pods"
+  type        = bool
+  default     = false
+}
+
+variable "security_context_fs_group" {
+  description = "when fsGroup field is specified, all processes of the container are also part of the supplementary group ID given"
+  type        = string
+  default     = "2000"
+}
+
 #####
 # Ingress
 #####
