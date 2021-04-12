@@ -87,6 +87,12 @@ resource "kubernetes_deployment" "this" {
       spec {
         service_account_name            = kubernetes_service_account.this.metadata.0.name
         automount_service_account_token = true
+        dynamic "security_context" {
+          for_each = var.enabled_security_context ? [""] : []
+          content {
+            fs_group = var.security_context_fs_group
+          }
+        }
         container {
           name  = "grafana"
           image = format("%s:%s", var.image, var.image_version)

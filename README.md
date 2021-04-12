@@ -51,6 +51,7 @@ No Modules.
 | deployment\_template\_labels | Map of annotations to apply to the namespace. | `map(string)` | `{}` | no |
 | deploymnet\_labels | deploymnet labels  that will be merged for the deployment. | `map(string)` | `{}` | no |
 | enabled\_localstorage | should local storage be enabled for grafana | `bool` | `true` | no |
+| enabled\_security\_context | should security contect be enabled for grafana pods | `bool` | `false` | no |
 | image | Image to use. | `string` | `"grafana/grafana"` | no |
 | image\_version | Version of the image to use. | `string` | `"latest"` | no |
 | ingress\_annotations | Map of annotations that will be applied on the ingress. | `map(string)` | `{}` | no |
@@ -80,6 +81,7 @@ No Modules.
 | secret\_configuration | should contain grafana secret env variables, see the example below<br>  For example, {<br>  { "GF\_SECURITY\_ADMIN\_PASSWORD" = "xxxxx" }<br>} | `map(string)` | `{}` | no |
 | secret\_labels | Additionnal labels that will be merged for the secret. | `map(string)` | `{}` | no |
 | secret\_name | Name of the secret that will be created. | `string` | `"grafana"` | no |
+| security\_context\_fs\_group | when fsGroup field is specified, all processes of the container are also part of the supplementary group ID given | `string` | `"2000"` | no |
 | service\_account\_annotations | Map of annotations that is merged on the service account. | `map(string)` | `{}` | no |
 | service\_account\_labels | Map of labels that is merged on the service account. | `map(string)` | `{}` | no |
 | service\_account\_name | name of the service account | `string` | `"grafana"` | no |
