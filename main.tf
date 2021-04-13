@@ -78,7 +78,7 @@ resource "kubernetes_deployment" "this" {
         )
         annotations = merge(
           local.annotations,
-          { "configuration/hash" = sha256(join(", ", values(var.configuration))) },
+          { "configuration/hash" = sha256(format("%s%s", join(", ", values(var.configuration)), var.ldap_configuration)) },
           var.annotations,
           var.deployment_template_annotations
         )
