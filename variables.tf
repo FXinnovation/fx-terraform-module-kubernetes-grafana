@@ -230,6 +230,12 @@ variable "ingress_key" {
 
 }
 
+variable "ingress_tls_ingress_annotations" {
+  description = "Map of sannotations that will be applied on the ingress tls secret."
+  default     = {}
+  type        = map(string)
+}
+
 variable "additionnal_ingress_paths" {
   description = <<-DOCUMENTATION
 A list of map of additionnal ingress path to add. Map must support the following structure:
@@ -362,7 +368,7 @@ variable "secret_labels" {
   type        = map(string)
 }
 
-variable "ingress_secret_labels" {
+variable "ingress_tls_secret_labels" {
   description = "Additionnal labels that will be merged for the ingress tls secret."
   default     = {}
   type        = map(string)
