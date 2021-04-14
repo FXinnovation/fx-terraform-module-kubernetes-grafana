@@ -213,7 +213,7 @@ variable "ingress_tls_enabled" {
 
 variable "ingress_tls_secret_name" {
   description = "Name of the secret to use to put TLS on the ingress."
-  default     = "grafana"
+  default     = "grafana-tls"
   type        = string
 }
 

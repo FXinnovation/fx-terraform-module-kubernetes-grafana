@@ -64,7 +64,7 @@ No Modules.
 | ingress\_tls\_enabled | Whether or not TLS should be enabled on the ingress. | `bool` | `true` | no |
 | ingress\_tls\_ingress\_annotations | Map of sannotations that will be applied on the ingress tls secret. | `map(string)` | `{}` | no |
 | ingress\_tls\_secret\_labels | Additionnal labels that will be merged for the ingress tls secret. | `map(string)` | `{}` | no |
-| ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"grafana"` | no |
+| ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"grafana-tls"` | no |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map(string)` | `{}` | no |
 | ldap\_configuration | Content of the ldap.toml file that will be used for ldap configuration. (LDAP needs to be enabled in the configuration to take effect.) | `string` | `""` | no |
 | namespace | Namespace in which the module will be deployed. | `string` | `"grafana"` | no |
