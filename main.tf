@@ -411,16 +411,17 @@ resource "kubernetes_secret" "ingress_tls" {
       var.ingress_annotations,
       var.ingress_tls_ingress_annotations
     )
+    labels = merge(
+      local.labels,
+      {
+        "instance" = var.ingress_tls_secret_name
+        component  = "configuration"
+      },
+      var.labels,
+      var.ingress_tls_secret_labels
+    )
   }
-  labels = merge(
-    local.labels,
-    {
-      "instance" = var.ingress_tls_secret_name
-      component  = "configuration"
-    },
-    var.labels,
-    var.ingress_tls_secret_labels
-  )
+
   type = "kubernetes.io/tls"
   data = {
     "tls.crt" = var.ingress_crt
