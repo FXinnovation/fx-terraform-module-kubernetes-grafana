@@ -217,6 +217,19 @@ variable "ingress_tls_secret_name" {
   type        = string
 }
 
+variable "ingress_crt" {
+  description = "CRT file that will be used for the grafana tls ingress."
+  type        = string
+  default     = "foo"
+}
+
+variable "ingress_key" {
+  description = "KEY file that will be used for the grafana tls ingress."
+  type        = string
+  default     = "foo"
+
+}
+
 variable "additionnal_ingress_paths" {
   description = <<-DOCUMENTATION
 A list of map of additionnal ingress path to add. Map must support the following structure:
@@ -345,6 +358,12 @@ variable "secret_annotations" {
 
 variable "secret_labels" {
   description = "Additionnal labels that will be merged for the secret."
+  default     = {}
+  type        = map(string)
+}
+
+variable "ingress_secret_labels" {
+  description = "Additionnal labels that will be merged for the ingress tls secret."
   default     = {}
   type        = map(string)
 }

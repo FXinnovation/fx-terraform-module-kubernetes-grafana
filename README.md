@@ -55,10 +55,13 @@ No Modules.
 | image | Image to use. | `string` | `"grafana/grafana"` | no |
 | image\_version | Version of the image to use. | `string` | `"latest"` | no |
 | ingress\_annotations | Map of annotations that will be applied on the ingress. | `map(string)` | `{}` | no |
+| ingress\_crt | CRT file that will be used for the grafana tls ingress. | `string` | `"foo"` | no |
 | ingress\_enabled | Whether or not to enable the ingress. | `bool` | `true` | no |
 | ingress\_host | Host on which the ingress wil be available (ex: grafana.example.com). | `string` | `"grafana.example.com"` | no |
+| ingress\_key | KEY file that will be used for the grafana tls ingress. | `string` | `"foo"` | no |
 | ingress\_labels | Map of labels that will be applied on the ingress. | `map(string)` | `{}` | no |
 | ingress\_name | Name of the ingress. | `string` | `"grafana"` | no |
+| ingress\_secret\_labels | Additionnal labels that will be merged for the ingress tls secret. | `map(string)` | `{}` | no |
 | ingress\_tls\_enabled | Whether or not TLS should be enabled on the ingress. | `bool` | `true` | no |
 | ingress\_tls\_secret\_name | Name of the secret to use to put TLS on the ingress. | `string` | `"grafana"` | no |
 | labels | Map of labels that will be merged with all other labels on all kubernetes resource. | `map(string)` | `{}` | no |

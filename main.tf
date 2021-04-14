@@ -258,7 +258,7 @@ resource "kubernetes_ingress" "this" {
     dynamic "tls" {
       for_each = var.ingress_tls_enabled ? [1] : []
       content {
-        secret_name = var.ingress_tls_secret_name
+        secret_name = kubernetes_secret.tls.metadata.0.name
         hosts       = [var.ingress_host]
       }
     }
@@ -400,4 +400,25 @@ resource "kubernetes_secret" "this" {
   }
   data = var.secret_configuration
   type = "Opaque"
+}
+
+resource "kubernetes_secret" "tls" {
+  metadata {
+    name      = var.ingress_tls_secret_name
+    namespace = "default"
+  }
+  labels = merge(
+    local.labels,
+    {
+      "instance" = var.ingress_tls_secret_name
+      component  = "configuration"
+    },
+    var.labels,
+    var.ingress_tls_secret_labels
+  )
+  type = "kubernetes.io/tls"
+  data = {
+    "tls.crt" = var.ingress_crt
+    "tls.key" = var.ingress_key
+  }
 }
